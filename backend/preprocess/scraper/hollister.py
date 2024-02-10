@@ -28,8 +28,10 @@ scraped = defaultdict(list)
 
 #   product_list.extend([i for i in list(r.html.links) if i.startswith("/shop/us/p/")])
 
+type_of_cloth = 'womens-matching-sets-dresses-and-rompers'
 
-r = session.get(f'https://www.abercrombie.com/shop/us/womens-tops--1?filtered=true&rows=90&start=0')
+
+r = session.get(f'https://www.abercrombie.com/shop/us/{type_of_cloth}?filtered=true&rows=90&start=0')
 
 
 product_list.extend([i for i in list(r.html.links) if i.startswith("/shop/us/p/")])
@@ -64,10 +66,10 @@ for i in product_list:
     print(f'url: {url}')
     x = get_rec_images(url)
     scraped[f'https://www.abercrombie.com{i}'] = x
-    with open("women_tops.pickle", 'wb') as file:
+    with open(f"{type_of_cloth}.pickle", 'wb') as file:
         pickle.dump(scraped, file)
         
     print(j)
     j += 1
 
-print(f'Women Tops saved to women_tops.pickle')
+print(f'Items saved to {type_of_cloth}.pickle')
