@@ -7,9 +7,9 @@ client = OpenAI()
 
 def get_text_embedding(text: str) -> List[float]:
     response = client.embeddings.create(model="text-embedding-ada-002", input=text)
-    response.data[0]["embedding"]
+    return response.data[0].embedding
 
-def filter_image_description(description: str) -> List[Dict[str, str]]:
+def filter_image_description(description: str) -> str:
     response = client.chat.completions.create(
         model="gpt-4-0125-preview",
         messages=[
@@ -31,6 +31,6 @@ def filter_image_description(description: str) -> List[Dict[str, str]]:
                 "content": description,
             },
         ],
-        temperature=0.4,
+        temperature=0.5,
     )
     return response.choices[0].message.content
