@@ -28,7 +28,7 @@ scraped = defaultdict(list)
 
 #   product_list.extend([i for i in list(r.html.links) if i.startswith("/shop/us/p/")])
 
-type_of_cloth = 'mens-tops--1'
+type_of_cloth = 'mens-bottoms--1'
 
 
 r = session.get(f'https://www.abercrombie.com/shop/us/{type_of_cloth}?filtered=true&rows=90&start=0')
