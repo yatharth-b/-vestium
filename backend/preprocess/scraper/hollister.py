@@ -15,10 +15,9 @@ Creates a pickle file such that it is a dictionary that maps link to product: ([
 
 
 chrome_options = Options()
-# chrome_options.add_argument("--headless")
+chrome_options.add_argument('--headless=new')
 
 session = HTMLSession()
-
 product_list = []
 
 scraped = defaultdict(list)
@@ -28,7 +27,7 @@ scraped = defaultdict(list)
 
 #   product_list.extend([i for i in list(r.html.links) if i.startswith("/shop/us/p/")])
 
-type_of_cloth = 'mens-bottoms--1'
+type_of_cloth = 'womens-bottoms-flare-jeans-jeans'
 
 
 r = session.get(f'https://www.abercrombie.com/shop/us/{type_of_cloth}?filtered=true&rows=90&start=0')
