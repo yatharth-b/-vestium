@@ -1,8 +1,11 @@
 from pinscrape import pinscrape
+import os
+import shutil
 
 def get_photos_from_pinterest(keyword):
   print(f'keyworded detected: {keyword}')
-  details = pinscrape.scraper.scrape(keyword, "output", {}, 10, 15)
+  details = pinscrape.scraper.scrape(f'{keyword} style fashion', "output", {}, 10, 15)
+  shutil.rmtree("output")
   return details['url_list']
 
 def get_rec_from_web(description):
@@ -11,3 +14,6 @@ def get_rec_from_web(description):
 
 def get_rec_from_wardrobe(description):
   return ["link to image in wardrobe"]
+
+def get_pinterest_similar_pinterest(description):
+  return ["link to 10 other pinterests"]

@@ -1,15 +1,20 @@
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
+import shutil
+# from pinscrape import pinscrape
+from PinterestImageScraper import PinterestImageScraper
 import json
-from utils import get_photos_from_pinterest, get_rec_from_wardrobe, get_rec_from_web
+from backend.bot_utils import get_photos_from_pinterest, get_rec_from_wardrobe, get_rec_from_web, get_pinterest_similar_pinterest
 
 class ChatBot():
     def __init__(self) -> None:
         self.conversation_history = [{"role": "system", "content": "You are a useful stylist that helps people plan their clothes along with finding them from pinterest\
  (searching from web) and vectordatabases that are finction calls"}]
         
-        self.client = OpenAI(api_key = 'abc')
+        load_dotenv()
+        
+        self.client = OpenAI(api_key = os.getenv("OPEN_AI_KEY"))
 
         self.tools = [
             {
@@ -29,11 +34,32 @@ class ChatBot():
                     "required": ["theme"],
                     },
                 },
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "get_pinterest_similar_pinterest",
+                        "description": "I like some photos, please give some more similar PHOTOS/ ideas",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {
+                                "like_list": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                    },
+                                    "minItems": 1,
+                                    "maxItems": 10,
+                                    "description": "list of links that the assistant provided and the user likes"
+                                }
+                            }
+                        }
+                    }
+                },
             {
                 "type": "function",
                 "function": {
                     "name": "get_rec_from_web",
-                    "description": "Give outfit recommendations based on these selected outfits from the INTERNET",
+                    "description": "Give outfit RECOMMENDATIONS based on these selected outfits from the INTERNET STORES",
                     "parameters": {
                         "type": "object",
                         "properties": {
@@ -73,11 +99,11 @@ class ChatBot():
         ]
         
     def get_user_input(self, message):
-        message = {"role": "user", "content": message}
+        message = [{"role": "user", "content": message}]
         self.conversation_history.extend(message)
         data = self.client.chat.completions.create(
                     model="gpt-3.5-turbo-0125",
-                    messages=message,
+                    messages=self.conversation_history,
                     tools=self.tools,
                     )
         return self.act_on_model_output(data)
@@ -108,4 +134,10 @@ class ChatBot():
             self.conversation_history.extend(messages)
             return output
 
-
+if __name__ == "__main__":
+    bot = ChatBot()
+    print(bot.get_user_input("Hello, how are you doing today?"))
+    print(bot.get_user_input("I want inspiration for an outfit for a mafia themed party?"))
+    print(bot.get_user_input("I like the 5th and 7th idea, can you please tell if there is something in my wardrobe through which I can make the outfit?"))
+    print(bot.get_user_input("What about the internet?"))
+    print(bot.get_user_input("Thank you so much!"))
