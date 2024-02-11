@@ -1,7 +1,8 @@
 from typing import List
 from backend.ai.replicate_utils import llava_image_to_text_single_item, llava_image_to_text_multiple_items
-from backend.ai.openai_utils import gpt_vision_item_description
-from backend.vectordb.pinecone_utils import insert_uploaded_item, insert_scraped_item
+from backend.ai.openai_utils import gpt_vision_item_description, extract_unique_items
+from backend.vectordb.pinecone_utils import insert_uploaded_item, insert_scraped_item, query_item
+import random
 
 def process_scraped_image(image_link: str, outfit_links: List[str], product_link: str):
     item_description = llava_image_to_text_single_item(image_link)
@@ -11,17 +12,46 @@ def process_uploaded_image(image_link: str, user_id: str):
     image_description = llava_image_to_text_multiple_items(image_link)   
     insert_uploaded_item(image_description, image_link, user_id)
     
-def recommend_items(image_links: List[str]):
-    all_item_descriptions = []
-    for image_link in image_links:
-        item_descriptions = gpt_vision_item_description(image_link)
-        all_item_descriptions.extend(item_descriptions)
+def recommend_items(image_links: List[str], user_id: str, only_store: bool = True):
+    chosen_link = random.sample(image_links, 1)
     
-    all_item_descriptions = "\n\n".join(all_item_descriptions)
+    # item_descriptions = gpt_vision_item_description(chosen_link[0])
+    item_descriptions = ['Vertical striped shirt, blue and white, with a relaxed fit, short sleeves, and an open collar.', 'White shorts, knee-length, with a tailored fit and a flat front design.', 'White slide sandals with a wide strap over the foot.']
+    print(item_descriptions)
+    # filtered_descriptions = extract_unique_items(item_descriptions)
     
+    # all_item_descriptions = []
+    # for image_link in image_links:
+    #     item_descriptions = gpt_vision_item_description(image_link)
+    #     all_item_descriptions.extend(item_descriptions)
+    
+    # all_item_descriptions = "\n\n".join(all_item_descriptions)
+    
+    # print(all_item_descriptions)
+    # filtered_descriptions = extract_unique_items(all_item_descriptions)
+    # print(filtered_descriptions)
+    
+    for desc in item_descriptions:
+        if only_store:
+            a = query_item(desc, { "source": "Scraped" }, top_k=3)
+            print("here9", len(a))
+        else:
+            a = query_item(desc, { "source": "User", "user_id": user_id }, top_k=3, min_confidence=0.8)
+            print("here8", len(a))
+            if len(a) < 3:
+                a.extend(query_item(desc, { "source": "Scraped" }, top_k=3 - len(a)))
+            print("here7", len(a))
+        print("here6", a[0])
+        print("here5", desc)
+    print(chosen_link[0])
 
 if __name__ == "__main__":
-    print(process_uploaded_image("https://img.abercrombie.com/is/image/anf/KIC_139-3446-1203-100_prod1?policy=product-medium&wid=350&hei=438", ""))
+    # print(process_uploaded_image("https://img.abercrombie.com/is/image/anf/KIC_139-3446-1203-100_prod1?policy=product-medium&wid=350&hei=438", ""))
+    recommend_items([
+        "https://i.pinimg.com/564x/62/7c/ef/627cef7342f04f22c7a0aef496cb028f.jpg",
+        "https://i.pinimg.com/564x/f2/78/72/f278729c5fc48b2cb577fb595212a39b.jpg",
+        "https://i.pinimg.com/564x/9a/c0/4c/9ac04cfef297d15a5310394f14f67796.jpg"
+    ], "")
     
     
 # image_description = """
