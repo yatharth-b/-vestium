@@ -142,6 +142,9 @@ export default function Home() {
   useEffect(() => {
     if (dummyRef.current) {
       dummyRef.current.scrollIntoView({ behavior: "smooth" });
+      if (!loadingResponse) {
+        messageRef.current?.focus();
+      }
     }
   }, [loadingResponse]);
 
