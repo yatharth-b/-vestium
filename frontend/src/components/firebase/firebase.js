@@ -31,3 +31,108 @@ export const storage = getStorage(app);
 
 export const signInWithGoogle = () => signInWithPopup(auth, provider)
 
+// .Request {
+//   width: 100vw;
+//   height: 100vh;
+//   background: #FBEAD2;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   overflow-x: hidden;
+// }
+// .RequestImage {
+//   margin-top: 50px;
+//   min-width: 300px;
+//   min-height: 200px;
+//   width: 30%;
+//   display: flex;
+//   /* padding: 20px; */
+//   background-color: rebeccapurple;
+//   border-radius: 8px;
+//   position: relative;
+//   overflow: hidden;
+// }
+
+// .RequestCardContent {
+//   align-self: flex-end;
+//   position: absolute;
+//   padding: 20px;
+//   color: white;
+// }
+
+
+
+// .RequestCardDate {
+//   font-size: 28px;
+// }
+
+// .RequestImageImage {
+//   width: 100%;
+//   height: 100%;
+//   object-fit: cover;
+//   position: absolute;
+// }
+
+// .RequestGradient {
+//   width: 100%;
+//   height: 100%;
+//   object-fit: cover;
+//   position: absolute;
+//   background: linear-gradient(29deg, #000 5.52%, rgba(255, 255, 255, 0.00) 106.33%)
+// }
+
+// .Recommendations {
+//   margin-top: 50px;
+//   margin-left: 50px;
+//   display: flex;
+//   width: 100vw;
+//   overflow-x: auto;
+//   column-gap: 25px;
+// }
+
+// .RecommendationCard {
+//   min-width: 200px;
+//   height: 300px;
+//   margin-left: 15px;
+//   margin-right: 15px;
+//   position: relative;
+//   border-radius: 8px;
+//   overflow: hidden;
+//   display: flex;
+//   /* flex-direction: column; */
+// } 
+
+// .RecommendationCardNum {
+//   font-size: 12px;
+// }
+
+// .RecommendationImage {
+//   width: 100%;
+//   height: 100%;
+//   object-fit: cover;
+//   position: absolute;
+// }
+
+// .RecommendationCardContent {
+//   position: absolute;
+//   color: white;
+//   padding: 20px;
+//   align-self: flex-end;
+// }
+
+// .SlugHeader {
+//   display: flex;
+//   padding: 20px;
+//   align-items: center;
+//   font-size: 32px;
+//   align-self: flex-start;
+// }
+
+// .BackArrow {
+//   width: 60px;
+//   height: 60px;
+// }
+
+// .SlugHeaderLink {
+//   align-self: fle;
+// }

@@ -11,9 +11,22 @@ import { Input } from "@/components/ui/input";
 import { User, onAuthStateChanged } from "firebase/auth";
 
 import { useTheme } from "next-themes";
-
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
 import { userAgent } from "next/server";
+import Link from "next/link";
+
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+
 
 type ChatMessage = {
   role?: string;
@@ -33,6 +46,9 @@ export default function Home() {
   const [apiHistory, setApiHistory] = useState<ChatMessage[]>([]);
   const [loadingResponse, setLoadingResponse] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+
+  const [recData, setRecData] = useState<any>(null)
+  const [drawerOpen, setDrawerOpen] = useState<any>(false)
 
   const messageRef = useRef<HTMLInputElement>(null);
 
@@ -122,7 +138,12 @@ export default function Home() {
         // newChatHistory[newChatHistory.length - 1].content = response_data.content;
 
         if (response_data.recommendations) {
-          
+          setRecData(response_data.recommendations);
+          const snap = await getDoc(doc(db, "wardrobe", user!.uid));
+          const outfits = snap.data()?.outfits ?? [];
+          outfits.push({...response_data.recommendations, timeCreated : getDate()})
+          setDrawerOpen(true);
+          await setDoc(doc(db, "wardrobe", user!.uid), { outfits }, { merge : true });
         }
 
         if (response_data.links) {
@@ -293,6 +314,22 @@ export default function Home() {
       ) : (
         <></>
       )}
+      <Drawer open={drawerOpen}>
+        <DrawerContent>
+          <DrawerHeader>
+          <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0 text-center">
+            It's a Match!
+          </h2>
+
+          </DrawerHeader>
+          {recData ? <div className="w-[100%] flex flex-col justify-center items-center p-10">
+            <img src={`${recData.targetImageLink}`} className="w-[150px] rounded-lg"></img>
+          </div> : <></>}
+          <Link href="/outfits">
+            <Button variant="outline" className="p-10">Check it out!</Button>
+          </Link>
+        </DrawerContent>
+      </Drawer>
     </main>
   );
 }
