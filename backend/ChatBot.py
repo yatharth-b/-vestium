@@ -15,8 +15,6 @@ class ChatBot():
         
         self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-        self.end_history = {"role": "assistant", "content": "Are you satisfied with the recommendations, or do you wish to see more suggestions?"}
-
         self.tools = [
             {
                 "type": "function",
@@ -112,8 +110,8 @@ class ChatBot():
         
     def act_on_user_input(self, message):
 
-        message = [{"role": "user", "content": message}]
-        self.conversation_history.extend(message)
+        # message = [{"role": "user", "content": message}]
+        # self.conversation_history.extend(message)
         data = self.client.chat.completions.create(
                     model="gpt-3.5-turbo-0125",
                     messages=self.conversation_history,
@@ -152,7 +150,7 @@ class ChatBot():
                 text = f"We are sorry to hear about that. Can you please tell what you are looking for?"
                 messages = [{"role": "assistant", "content": text}]
                 self.conversation_history.extend(messages)
-                return {"text": text}
+                return {"conversation_history": self.conversation_history}
             else:
                 print(function.name)
                 raise ValueError("Function being called by GPT doesn't exist.")
@@ -160,9 +158,9 @@ class ChatBot():
             string_output = ', '.join(output)
             messages = [{"role": "assistant", "content": string_output}] # Because it is outputting, no need to add history here
             self.conversation_history.extend(messages)
-            return {"links": output, "text": text}
+            return {"links": output, "conversation_history": self.conversation_history}
         else:
             output = data.choices[0].message.content
             messages = [{"role": "assistant", "content": output}]
             self.conversation_history.extend(messages)
-            return {"text": output}
+            return {"conversation_history": self.conversation_history}

@@ -18,8 +18,6 @@ if PORT is not None:
 else:
     PORT = 3001
 
-chatbot_text = ChatBot()
-
 @app.route("/health")
 def check_connectivity():
     return {"hello": "world"}
@@ -27,6 +25,8 @@ def check_connectivity():
 @app.route("/recommend/chat", methods=["POST"])
 def chat_gpt_3():
     data = request.get_json()
+    chatbot_text = ChatBot()
+    chatbot_text.conversation_history = data['conversation_history']
     output = chatbot_text.act_on_user_input(data['message'])
     return json.dumps(output)
 
