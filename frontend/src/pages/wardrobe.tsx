@@ -62,12 +62,14 @@ export default function Home() {
       setError("Please upload the picture of the item!");
       return;
     }
-
-    console.log(selectedFiles)
-
+    
+    uploadImage(user!.uid, selectedFiles[0], messageRef.current.value).then((response) => {
+      console.log(response)
+    })
+    
   }
 
-  const handleFileChange = (event) => {
+  const handleFileChange = (event : any) => {
     const files = event.target.files;
     setSelectedFiles(files);
   };
@@ -103,7 +105,7 @@ export default function Home() {
                 <Input
                   placeholder="What's the name of this item?"
                   ref={messageRef}
-                ></Input>
+                />
                 <Button onClick={handleUpload}>Upload</Button>
                 <DialogDescription className="text-red-500">{error}</DialogDescription>
               </DialogContent>

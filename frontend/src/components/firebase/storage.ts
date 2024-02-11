@@ -3,7 +3,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { db } from "./firebase";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 
-export const uploadImage = async (userId: string, file: File, name : string, uid:string) => {
+export const uploadImage = async (userId: string, file: File, name : string) => {
   const storageRef = ref(storage, `images/${userId}/${file.name}`);
   const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -29,15 +29,15 @@ export const uploadImage = async (userId: string, file: File, name : string, uid
           })
         })
         
-        if (vec_response.status == 200) {
-          const snap = await getDoc(doc(db, "wardrobe", uid));
-          const items = snap.data()?.items ?? [];
-          items.push({
-            link: downloadURL,
-            name: name
-          })
-          await updateDoc(doc(db, "users", uid), { items });
-        }
+        // if (vec_response.status == 200) {
+        //   const snap = await getDoc(doc(db, "wardrobe", userId));
+        //   const items = snap.data()?.items ?? [];
+        //   items.push({
+        //     link: downloadURL,
+        //     name: name
+        //   })
+        //   await updateDoc(doc(db, "users", userId), { items });
+        // }
       
       });
     }
