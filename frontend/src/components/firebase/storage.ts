@@ -25,7 +25,8 @@ export const uploadImage = async (userId: string, file: File, name : string) => 
         //   },
         //   body: JSON.stringify({
         //     userId,
-        //     imageUrl: downloadURL
+        //     imageUrl: downloadURL,
+        //     name,
         //   })
         // })
 
