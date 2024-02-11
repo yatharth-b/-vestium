@@ -38,7 +38,7 @@ class ChatBot():
                           },
                         "reply" : {
                             "type": "string", 
-                            "description": "Vestium's conversational reply to the user which keeps the user engaged in the conversation"
+                            "description": "Vestium's conversational reply to the user which keeps the user engaged in the conversation."
                           }
                         }
                         },
@@ -61,9 +61,13 @@ class ChatBot():
                                     "minItems": 1,
                                     "maxItems": 10,
                                     "description": "list of links that the assistant provided and the user likes"
+                                }, 
+                                "reply" : {
+                                    "type": "string", 
+                                    "description": "Vestium's conversational reply to the user which keeps the user engaged in the conversation"
                                 }
-                            }
-                        }
+                            }, 
+                        }, "required": ["reply"],
                     }
                 },
             {
@@ -72,8 +76,14 @@ class ChatBot():
                         "name": "get_anti_pinterest",
                         "description": "I don't like any ideas, please suggest something different",
                         "parameters": {
-                            
+                            "type": "object",
+                            "properties": {
+                                "reply" : {
+                                "type": "string", 
+                                "description": "Vestium's conversational reply to the user which keeps the user engaged in the conversation"
+                            }
                         }
+                        }, "required": ["reply"],
                     }
                 },
             {
@@ -91,10 +101,14 @@ class ChatBot():
                                 },
                                 "minItems": 1,
                                 "maxItems": 10,
-                                "description": "list of links that the assistant provided and the user likes"
+                                "description": "list of links that the assistant provided and the user likes. SHOULD always be given"
                             }
+                        },                                                     
+                        "reply" : {
+                            "type": "string", 
+                            "description": "Vestium's conversational reply to the user which keeps the user engaged in the conversation"
                         }
-                    }, "required": ["like_list"]
+                    }, "required": ["reply"]
                 }
             }, 
              {
@@ -112,10 +126,14 @@ class ChatBot():
                                 },
                                 "minItems": 1,
                                 "maxItems": 10,
-                                "description": "list of links that the assistant provided and the user likes"
-                            }
+                                "description": "list of links that the assistant provided and the user likes. SHOULD always be given."
+                            },                                                     
+                            "reply" : {
+                            "type": "string", 
+                            "description": "Vestium's conversational reply to the user which keeps the user engaged in the conversation."
                         }
-                    }, "required": ["like_list"]
+                        }
+                    }, "required": ["reply"]
                 }
             }
         ]
@@ -129,8 +147,7 @@ class ChatBot():
                     messages=self.conversation_history,
                     tools=self.tools,
                     )
-        print(self.tools)
-        print(data)
+        # print(data)
         return self.act_on_model_output(data, uid)
 
     def human_voice(self, text):
@@ -138,8 +155,8 @@ class ChatBot():
               model="gpt-3.5-turbo-0125",
               messages=[{
                   "role": "user",
-                  "content": f"Please rephrase this text to sound more humanly: '{text}' Make it sound like you \
-                      are an assistant and in middle of a conversation with the user and are waiting for their reply. \
+                  "content": f"Please rephrase this text to sound more humanly, you can change the wording based on the theme of the text: '{text}' Make it sound like you \
+                      are an intelligent assistant in middle of a conversation with the user and are waiting for their reply. \
                           Please do not add any greetings (such as hey, bye etc.) since you are in a middle of a conversation."
               }])
         return data.choices[0].message.content
@@ -147,33 +164,43 @@ class ChatBot():
     def act_on_model_output(self, data, uid):
         if data.choices[0].finish_reason == 'tool_calls':
             # Some functional call has to happen
+            # print(data)
             function = data.choices[0].message.tool_calls[0].function
+            print("Printing function")
+            print(function)
             text = ""
+            if 'reply' in json.loads(function.arguments):
+                text = json.loads(function.arguments)['reply']
+
             if function.name == 'get_photos_from_pinterest':
                 theme = json.loads(function.arguments)['theme']
                 self.tags.append(theme)
                 output = get_photos_from_pinterest(self.tags)
-                text = self.human_voice(f"Here are some photos on {theme}. Please let me know which ones you like?")
+                if text == "":
+                    text = self.human_voice(f"Here are some photos on {theme}. Please let me know which ones you like?")                
             elif function.name == 'get_rec_from_web':
                 like_list = json.loads(function.arguments)['like_list']
                 output = get_rec_from_web(like_list)
-                text = self.human_voice(f"Here are some clothes from online stores.")
             elif function.name == 'get_rec_from_wardrobe':
                 like_list = json.loads(function.arguments)['like_list']
                 output = get_rec_from_wardrobe(like_list, uid)
-                text = self.human_voice(f"Here are some clothes from your wardrobe that I think will suffice your needs.")
+                if text == "":
+                    text = self.human_voice(f"Here are some clothes from your wardrobe that I think will suffice your needs.")
             elif function.name == 'get_pinterest_similar_pinterest':
                 like_list = json.loads(function.arguments)['like_list']
                 next_keyword = get_pinterest_similar_pinterest(like_list)
                 self.tags.append(next_keyword)
                 output = get_photos_from_pinterest(self.tags)
-                text = self.human_voice(f"I see you like {next_keyword}. Please let me know which of the following styles you like?")
+                if text == "":
+                    text = self.human_voice(f"I see you like {next_keyword}. Please let me know which of the following styles you like?")
             elif function.name == 'get_anti_pinterest':
                 self.tags = []
-                text = self.human_voice(f"We are sorry to hear about that. Can you please tell what you are looking for?")
+                if text == "":
+                    text = self.human_voice(f"We are sorry to hear about that. Can you please tell what you are looking for?")
+                text = json.loads(function.arguments)["reply"]
                 messages = [{"role": "assistant", "content": text}]
                 self.conversation_history.extend(messages)
-                return {"conversation_history": self.conversation_history, "content": text}
+                return {"conversation_history": self.conversation_history, "content": text, "keywords": self.tags, "links": []}
             else:
                 print(function.name)
                 raise ValueError("Function being called by GPT doesn't exist.")
@@ -185,13 +212,13 @@ class ChatBot():
             self.conversation_history.extend(messages)
             if function.name == "get_rec_from_wardrobe" or function.name == "get_rec_from_web":
                 return {"links": [], "conversation_history": self.conversation_history, "content": text, "keywords": self.tags, "recommendations": output}
-            print("here", self.tags)
             return {"links": output, "conversation_history": self.conversation_history, "content": text, "keywords": self.tags}
         else:
+            print("missed today")
             output = data.choices[0].message.content
             messages = [{"role": "assistant", "content": output}]
             self.conversation_history.extend(messages)
-            return {"conversation_history": self.conversation_history, "content": output}
+            return {"links": [], "conversation_history": self.conversation_history, "content": output, "keywords": self.tags}
 
 if __name__ == "__main__":
     bot = ChatBot()

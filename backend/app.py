@@ -26,10 +26,9 @@ def check_connectivity():
 def chat_gpt_3():
     data = request.get_json()
 
-    if len(data['conversation_history']) == 0:
-        data['conversation_history'].insert(0, {"user": "system", "content": "You are a useful stylist that helps people plan their clothes along with finding them from pinterest(searching from web) and vectordatabases that are function calls"})
-
-    chatbot_text = ChatBot(data['conversation_history'], data['keywords'])
+    conversation_history = data["conversation_history"] if "conversation_history" in data else None
+    keywords = data["keywords"] if "keywords" in data else None
+    chatbot_text = ChatBot(conversation_history, keywords)
     output = chatbot_text.act_on_user_input('userId')
     return json.dumps(output)
 
