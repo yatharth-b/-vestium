@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { Inter, Koulen } from "next/font/google";
-import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { signInWithGoogle } from "@/components/firebase/firebase"
