@@ -35,6 +35,8 @@ export default function Home() {
   const [user, setUser] = useState<User | null>(null);
 
   const messageRef = useRef<HTMLInputElement>(null);
+  const dummyRef = useRef<HTMLDivElement>(null);
+  const chatBoxRef = useRef<HTMLDivElement>(null);
 
   const get_resp = async (chatHistory: ChatMessage[]) => {
     const response = await fetch("/api/exec", {
@@ -76,6 +78,8 @@ export default function Home() {
       console.log("\n\n");
       setChatHistory(newMessages);
       setLoadingResponse(true);
+      dummyRef.current?.scrollIntoView({ behavior: "smooth" });
+      chatBoxRef.current?.scrollTo(0, chatBoxRef.current?.scrollHeight);
       messageRef.current.value = "";
 
       let newAPIHistory = [
@@ -135,6 +139,7 @@ export default function Home() {
       }
 
       setLoadingResponse(false);
+      dummyRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -173,7 +178,7 @@ export default function Home() {
       <Header></Header>
       {user ? (
         <div className="flex flex-col w-[60%] h-[90%] justify-between">
-          <div className="flex flex-col items-start justify-start w-[100%] h-[90%] overflow-y-auto">
+          <div className="flex flex-col items-start justify-start w-[100%] h-[90%] overflow-y-auto" ref={chatBoxRef}>
             {chatHistory.length == 0 ? (
               <>
                 <motion.div
@@ -263,6 +268,7 @@ export default function Home() {
                 )}
               </>
             )}
+            <div style={{ width: 1, height: 1 }} ref={dummyRef} />
           </div>
           <form onSubmit={(e) => {
             e.preventDefault();
