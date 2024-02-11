@@ -29,6 +29,9 @@ def add_image_to_vectordb():
     user_id = data["userId"]
     image_url = data["imageUrl"]
 
-    process_uploaded_image(image_url, user_id)
+    try:
+        process_uploaded_image(image_url, user_id)
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
     
     return {"status": "success"}
