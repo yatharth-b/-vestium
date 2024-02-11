@@ -264,24 +264,29 @@ export default function Home() {
               </>
             )}
           </div>
-          <div className="flex flex-row w-[100%] items-center h-[10] pb-10">
-            <Input
-              type="email"
-              placeholder="Ask me for any styling advice!"
-              disabled={loadingResponse}
-              ref={messageRef}
-              className="h-[100%]"
-            />
-            <Button
-              onClick={handleSubmitMessage}
-              className="ml-5 w-[10%] p-2 h-[110%]"
-              disabled={loadingResponse}
-            >
-              <span>
-                <img src="/send_symbol.svg" />
-              </span>
-            </Button>
-          </div>
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmitMessage()
+          }}>
+            <div className="flex flex-row w-[100%] items-center h-[10] pb-10">
+              <Input
+                type="email"
+                placeholder="Ask me for any styling advice!"
+                disabled={loadingResponse}
+                ref={messageRef}
+                className="h-[100%]"
+              />
+              <Button
+                onClick={handleSubmitMessage}
+                className="ml-5 w-[10%] p-2 h-[110%]"
+                disabled={loadingResponse}
+              >
+                <span>
+                  <img src="/send_symbol.svg" />
+                </span>
+              </Button>
+            </div>
+          </form>
         </div>
       ) : (
         <></>
