@@ -54,6 +54,17 @@ with two new line characters, and provide nothing extra."},
     items = [desc for desc in message.split("\n") if desc]
     return items
 
+def extract_unique_items(items: List[str]) -> List[str]:
+    unique_items = []
+    for item in items:
+        item = item.strip()
+        if item:
+            item = item.replace("\n", " ")
+            item = item.replace("  ", " ")
+            if item not in unique_items:
+                unique_items.append(item)
+    return unique_items
+
 
 if __name__ == "__main__":
     # embedding = get_text_embedding("These are casual pants with a natural, leafy print, featuring various shades of green and white. The pants have an elastic waistband for a comfortable fit and likely a drawstring for adjustment. The leg hems also appear to have elastic, providing a snug fit around the ankles. The fabric looks soft and lightweight, suitable for relaxed wear.")

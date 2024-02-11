@@ -1,6 +1,6 @@
 from typing import List
 from backend.ai.replicate_utils import llava_image_to_text_single_item, llava_image_to_text_multiple_items
-from backend.ai.openai_utils import filter_image_description
+from backend.ai.openai_utils import gpt_vision_item_description
 from backend.vectordb.pinecone_utils import insert_uploaded_item, insert_scraped_item
 
 def process_scraped_image(image_link: str, outfit_links: List[str], product_link: str):
@@ -10,6 +10,15 @@ def process_scraped_image(image_link: str, outfit_links: List[str], product_link
 def process_uploaded_image(image_link: str, user_id: str):
     image_description = llava_image_to_text_multiple_items(image_link)   
     insert_uploaded_item(image_description, image_link, user_id)
+    
+def recommend_items(image_links: List[str]):
+    all_item_descriptions = []
+    for image_link in image_links:
+        item_descriptions = gpt_vision_item_description(image_link)
+        all_item_descriptions.extend(item_descriptions)
+    
+    all_item_descriptions = "\n\n".join(all_item_descriptions)
+    
 
 if __name__ == "__main__":
     print(process_uploaded_image("https://img.abercrombie.com/is/image/anf/KIC_139-3446-1203-100_prod1?policy=product-medium&wid=350&hei=438", ""))
