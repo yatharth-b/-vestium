@@ -59,7 +59,7 @@ def recommend_items(image_links: List[str], user_id: str = "", only_store: bool 
                 temp["name"], temp["imageLink"] = get_rec_name_and_image(product_link)
                 temp["productLink"] = product_link
             res.append(temp)
-    return res
+    return {"targetImageLink": chosen_link, "matches": res}
 
 if __name__ == "__main__":
     # print(process_uploaded_image("https://img.abercrombie.com/is/image/anf/KIC_139-3446-1203-100_prod1?policy=product-medium&wid=350&hei=438", ""))

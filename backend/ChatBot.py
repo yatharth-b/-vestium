@@ -14,7 +14,7 @@ class ChatBot():
         if conversation_history:
             self.conversation_history = conversation_history
         else:
-            self.conversation_history = [{"role": "system", "content": "You are a useful stylist that helps people plan their clothes along with finding them from pinterest(searching from web) and vectordatabases that are function calls"}]
+            self.conversation_history = [{"role": "system", "content": "You are a useful stylist called Vestium. You converse with users and help people plan their outfits according to their needs. You do this by finding inspiration from pinterest(searching from web) and vector stores of user's wardrobes using function calls"}]
         
         if tags:
             self.tags = tags
@@ -35,10 +35,14 @@ class ChatBot():
                         "theme": {
                             "type": "string", 
                             "description": "The theme user asked the outfit for while preserving gender"
-                            }
+                          },
+                        "reply" : {
+                            "type": "string", 
+                            "description": "Vestium's conversational reply to the user which keeps the user engaged in the conversation"
+                          }
                         }
                         },
-                    "required": ["theme"],
+                    "required": ["reply"],
                     },
                 },
                 {
@@ -121,10 +125,12 @@ class ChatBot():
         # message = [{"role": "user", "content": message}]
         # self.conversation_history.extend(message)
         data = self.client.chat.completions.create(
-                    model="gpt-3.5-turbo-0125",
+                    model="gpt-4-turbo-preview",
                     messages=self.conversation_history,
                     tools=self.tools,
                     )
+        print(self.tools)
+        print(data)
         return self.act_on_model_output(data, uid)
 
     def human_voice(self, text):
@@ -177,6 +183,8 @@ class ChatBot():
             
             messages = [{"role": "assistant", "content": string_output}] # Because it is outputting, no need to add history here
             self.conversation_history.extend(messages)
+            if function == "get_rec_from_wardrobe" or function == "get_rec_from_web":
+                return {"links": [], "conversation_history": self.conversation_history, "content": text, "keywords": self.tags, "recommendations": output}
             return {"links": output, "conversation_history": self.conversation_history, "content": text, "keywords": self.tags}
         else:
             output = data.choices[0].message.content

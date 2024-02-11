@@ -119,6 +119,10 @@ export default function Home() {
         ];
         // newChatHistory[newChatHistory.length - 1].content = response_data.content;
 
+        if (response_data.recommendations) {
+          
+        }
+
         if (response_data.links) {
           newChatHistory.push({
             links: [...response_data.links],
