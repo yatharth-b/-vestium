@@ -23,8 +23,8 @@ def insert_item(item_description: str, image_link: str, source: str, **metadata)
     )
 
 
-def insert_uploaded_item(item_description: str, image_link: str, user_id: str):
-    insert_item(item_description, image_link, "User", user_id=user_id)
+def insert_uploaded_item(item_description: str, image_link: str, user_id: str, name: str):
+    insert_item(item_description, image_link, "User", user_id=user_id, name=name)
 
 
 def insert_scraped_item(
