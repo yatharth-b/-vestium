@@ -109,10 +109,10 @@ export default function Home() {
 
   return (
     <main
-      className={`flex flex-col ${inter.className} bg-[#1E1E1E] overflow-hidden w-screen items-center`}
+      className={`flex flex-col ${inter.className} bg-[#1E1E1E] overflow-x-hidden w-screen items-center min-h-screen`}
     >
       <Header></Header>
-      <div className="w-[80%] min-w-[80%] flex flex-col mt-[100px] pb-[5%]">
+      <div className="w-[80%] min-w-[80%] flex flex-col mt-[100px] pb-[5%] overflow-hidden">
         <Card className="w-[350px] mb-10">
           <CardHeader>
             <CardTitle>Upload Clothes</CardTitle>

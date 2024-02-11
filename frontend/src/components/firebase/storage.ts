@@ -10,6 +10,19 @@ export const uploadImage = async (userId: string, file: File, name : string) => 
 
   const snap = await getDoc(doc(db, "wardrobe", userId));
   const items = snap.data()?.items ?? [];
+  
+  const res = await fetch("http://localhost:3001/recommend/chat", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      userId: userId,
+      imageUrl: downloadURL,
+      name: name
+    }),
+  });
+
   items.push({
     link: downloadURL,
     name: name

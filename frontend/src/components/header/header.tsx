@@ -13,7 +13,7 @@ import {
 import Link from "next/link";
 export default function Header() {
   return (
-    <div className="flex items-center gap-x-8 self-start bg-[#181818] w-screen p-[2%]">
+    <div className="flex items-center gap-x-8 self-start bg-[#181818] w-screen p-[2%] h-[10%]">
       <img src="/vestium_orange.png" className="h-10" />
       <NavigationMenu>
         <NavigationMenuList>
@@ -28,6 +28,13 @@ export default function Header() {
             <Link href="/wardrobe" legacyBehavior passHref>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 Wardrobe
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
+          <NavigationMenuItem>
+            <Link href="/outfits" legacyBehavior passHref>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                Outfits
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
