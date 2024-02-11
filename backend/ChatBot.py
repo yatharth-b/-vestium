@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import os
 import shutil
 from pinscrape import pinscrape
-from PinterestImageScraper import PinterestImageScraper
+from backend.PinterestImageScraper import PinterestImageScraper
 import json
 from backend.bot_utils import get_photos_from_pinterest, get_rec_from_wardrobe, get_rec_from_web, get_pinterest_similar_pinterest
 
