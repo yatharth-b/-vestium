@@ -25,9 +25,12 @@ def check_connectivity():
 @app.route("/recommend/chat", methods=["POST"])
 def chat_gpt_3():
     data = request.get_json()
+
+    if data['conversation_history'][0]['user'] != "system":
+        data['conversation_history'].insert(0, {"user": "system", "content": "You are a useful stylist that helps people plan their clothes along with finding them from pinterest(searching from web) and vectordatabases that are function calls"})
+
     chatbot_text = ChatBot()
-    print(data)
-    chatbot_text.conversation_history.extend(data['conversation_history'])
+    chatbot_text.conversation_history = data['conversation_history']
     output = chatbot_text.act_on_user_input(data['userId'])
     return json.dumps(output)
 
