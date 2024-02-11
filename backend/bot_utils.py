@@ -65,4 +65,11 @@ def get_pinterest_similar_pinterest(links):
   
   return response.choices[0].message.content
 
-# def ask_user_to_end():
+def show_user_shop():
+  '''
+  In this method, the bot first asks if the user would want to stop, and if not then continue
+  '''
+  # Firstly ask the user if they want to stop?
+  message = [{"role": "system", "content": "Are you satisfied with the recommendations, or do you wish to see more suggestions?"}]
+  
+  

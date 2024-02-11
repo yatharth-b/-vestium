@@ -5,7 +5,7 @@ import shutil
 # from pinscrape import pinscrape
 from PinterestImageScraper import PinterestImageScraper
 import json
-from backend.bot_utils import get_photos_from_pinterest, get_rec_from_wardrobe, get_rec_from_web, get_pinterest_similar_pinterest
+from backend.bot_utils import get_photos_from_pinterest, get_rec_from_wardrobe, get_rec_from_web, get_pinterest_similar_pinterest, show_user_shop
 
 class ChatBot():
     def __init__(self) -> None:
@@ -51,6 +51,22 @@ class ChatBot():
                                     "maxItems": 10,
                                     "description": "list of links that the assistant provided and the user likes"
                                 }
+                            }
+                        }
+                    }
+                },
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "show_user_shop",
+                        "description": "If the user seems to be satisfied with the pinterest recommendations",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {
+                                "show_shop": {
+                                    "type": "boolean",
+                                },
+                                "description": "If the user seems to be satisfied."
                             }
                         }
                     }

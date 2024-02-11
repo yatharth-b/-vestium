@@ -17,13 +17,9 @@ chatbot_text = ChatBot()
 def check_connectivity():
     return {"hello": "world"}
 
-@app.route("/recommend/chat_text", methods=["POST"])
+@app.route("/recommend/chat", methods=["POST"])
 def chat_gpt_3():
     data = request.get_json()
     output = chatbot_text.act_on_user_input(data['message'])
     return json.dumps(output)
 
-@app.route("/recommend/chat_image", methods=["POST"])
-def chat_vision():
-    data = request.get_json()
-    
