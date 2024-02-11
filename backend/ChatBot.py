@@ -185,13 +185,12 @@ class ChatBot():
             self.conversation_history.extend(messages)
             if function.name == "get_rec_from_wardrobe" or function.name == "get_rec_from_web":
                 return {"links": [], "conversation_history": self.conversation_history, "content": text, "keywords": self.tags, "recommendations": output}
-            print("here", self.tags)
             return {"links": output, "conversation_history": self.conversation_history, "content": text, "keywords": self.tags}
         else:
             output = data.choices[0].message.content
             messages = [{"role": "assistant", "content": output}]
             self.conversation_history.extend(messages)
-            return {"conversation_history": self.conversation_history, "content": output}
+            return {"links": [], "conversation_history": self.conversation_history, "content": output, "keywords": self.tags}
 
 if __name__ == "__main__":
     bot = ChatBot()
