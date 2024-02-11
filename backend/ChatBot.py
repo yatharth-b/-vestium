@@ -150,7 +150,7 @@ class ChatBot():
                 text = f"We are sorry to hear about that. Can you please tell what you are looking for?"
                 messages = [{"role": "assistant", "content": text}]
                 self.conversation_history.extend(messages)
-                return {"text": text}
+                return {"conversation_history": self.conversation_history}
             else:
                 print(function.name)
                 raise ValueError("Function being called by GPT doesn't exist.")
@@ -158,9 +158,9 @@ class ChatBot():
             string_output = ', '.join(output)
             messages = [{"role": "assistant", "content": string_output}] # Because it is outputting, no need to add history here
             self.conversation_history.extend(messages)
-            return {"links": output, "text": text, "conversation_history": self.conversation_history}
+            return {"links": output, "conversation_history": self.conversation_history}
         else:
             output = data.choices[0].message.content
             messages = [{"role": "assistant", "content": output}]
             self.conversation_history.extend(messages)
-            return {"text": output}
+            return {"conversation_history": self.conversation_history}
