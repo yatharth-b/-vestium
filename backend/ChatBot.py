@@ -123,14 +123,9 @@ class ChatBot():
     
     def get_photos_from_pinterest(self, keyword):
       print(f'keyworded detected: {keyword}')
-<<<<<<< HEAD
-      details = pinscrape.scraper.scrape(f'{keyword} style fashion', "output", {}, 5, 15)
-      shutil.rmtree("output")
-=======
       self.keywords.append(keyword)
       details = pinscrape.scraper.scrape(f'{",".join(self.keyword)} style fashion', "output", {}, 5, 15)
       # shutil.rmtree("output")
->>>>>>> eda789555afb222b9e374466b7c7abf0dac2fa2a
       return details['url_list']
 
     def human_voice(self, text):
@@ -138,8 +133,8 @@ class ChatBot():
               model="gpt-3.5-turbo-0125",
               messages=[{
                   "role": "user",
-                  "content": f"Please rephrase this text to sound more humanly: '{text}' Make it sound like you \
-                      are an assistant and in middle of a conversation with the user and are waiting for their reply. \
+                  "content": f"Please rephrase this text to sound more humanly, you can change the wording based on the theme of the text: '{text}' Make it sound like you \
+                      are an intelligent assistant in middle of a conversation with the user and are waiting for their reply. \
                           Please do not add any greetings (such as hey, bye etc.) since you are in a middle of a conversation."
               }])
         return data.choices[0].message.content
