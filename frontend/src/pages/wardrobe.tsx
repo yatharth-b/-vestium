@@ -90,8 +90,8 @@ export default function Home() {
           <CardContent></CardContent>
           <CardFooter className="flex justify-between">
             <Dialog>
-              <DialogTrigger>
-                <Button>Upload</Button>
+              <DialogTrigger className="bg-[#ea580c] p-[2%] rounded-md">
+                Upload
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>

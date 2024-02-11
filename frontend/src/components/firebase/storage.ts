@@ -29,15 +29,15 @@ export const uploadImage = async (userId: string, file: File, name : string) => 
           })
         })
         
-        // if (vec_response.status == 200) {
-        //   const snap = await getDoc(doc(db, "wardrobe", userId));
-        //   const items = snap.data()?.items ?? [];
-        //   items.push({
-        //     link: downloadURL,
-        //     name: name
-        //   })
-        //   await updateDoc(doc(db, "users", userId), { items });
-        // }
+        if (vec_response.status == 200) {
+          const snap = await getDoc(doc(db, "wardrobe", userId));
+          const items = snap.data()?.items ?? [];
+          items.push({
+            link: downloadURL,
+            name: name
+          })
+          await setDoc(doc(db, "wardrobe", userId), { items }, { merge : true });
+        }
       
       });
     }
