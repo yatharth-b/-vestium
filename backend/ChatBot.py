@@ -172,11 +172,8 @@ class ChatBot():
                 print(function.name)
                 raise ValueError("Function being called by GPT doesn't exist.")
 
-            if type(output) == dict:
-                string_output = str(output)
-            else:
-                print("HERE", type(output), output)
-                string_output = ', '.join(output)
+            # string_output = ', '.join(output)
+            string_output = str(output)
             
             messages = [{"role": "assistant", "content": string_output}] # Because it is outputting, no need to add history here
             self.conversation_history.extend(messages)

@@ -11,7 +11,7 @@ client = OpenAI()
 def get_photos_from_pinterest(tags):
   keyword = ', '.join(tags)
   print(f'keyword detected: {keyword}')
-  details = pinscrape.scraper.scrape(f'{keyword} style fashion', "output", {}, 10, 15)
+  details = pinscrape.scraper.scrape(f'{keyword} style clothes', "output", {}, 10, 15)
   shutil.rmtree("output")
   return details['url_list']
 
