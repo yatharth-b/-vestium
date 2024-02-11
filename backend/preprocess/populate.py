@@ -1,5 +1,5 @@
 import pickle
-import backend.image_process as ip
+import backend.process_image as ip
 import sys
 from multiprocessing import Pool
 
@@ -18,10 +18,11 @@ def process_clothes_pickle(path: str, num_processes: int = 1):
     inputs = []
     for product_link in data.keys():
         if data[product_link] is not None:
-            inputs.append((len(inputs), product_link, data[product_link][0], data[product_link][1]))
-        
+            inputs.append((len(inputs), product_link, data[product_link][0], data[product_link][1]))   
     with Pool(num_processes) as p:
         p.map(process_cloth, inputs)
+    
+    print(f"Finished processing {len(inputs)} items with {num_processes} processes. {len(data.keys()) - len(inputs)} items were skipped.")
 
 if __name__ == "__main__":
     pickle_file_path = sys.argv[1]
