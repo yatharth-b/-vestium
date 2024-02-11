@@ -2,19 +2,20 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import os
 import shutil
-# from pinscrape import pinscrape
+from pinscrape import pinscrape
 from PinterestImageScraper import PinterestImageScraper
 import json
-from backend.bot_utils import get_photos_from_pinterest, get_rec_from_wardrobe, get_rec_from_web, get_pinterest_similar_pinterest, show_user_shop
+from backend.bot_utils import get_photos_from_pinterest, get_rec_from_wardrobe, get_rec_from_web, get_pinterest_similar_pinterest
+
+load_dotenv()
 
 class ChatBot():
     def __init__(self) -> None:
-        self.conversation_history = [{"role": "system", "content": "You are a useful stylist that helps people plan their clothes along with finding them from pinterest\
- (searching from web) and vectordatabases that are finction calls"}]
+        self.conversation_history = [{"role": "system", "content": "You are a useful stylist that helps people plan their clothes along with finding them from pinterest(searching from web) and vectordatabases that are function calls"}]
         
-        load_dotenv()
-        
-        self.client = OpenAI(api_key = os.getenv("OPEN_AI_KEY"))
+        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+        self.end_history = {"role": "assistant", "content": "Are you satisfied with the recommendations, or do you wish to see more suggestions?"}
 
         self.tools = [
             {
@@ -55,19 +56,13 @@ class ChatBot():
                         }
                     }
                 },
-                {
+            {
                     "type": "function",
                     "function": {
-                        "name": "show_user_shop",
-                        "description": "If the user seems to be satisfied with the pinterest recommendations",
+                        "name": "get_anti_pinterest",
+                        "description": "I don't like any ideas, please suggest something different",
                         "parameters": {
-                            "type": "object",
-                            "properties": {
-                                "show_shop": {
-                                    "type": "boolean",
-                                },
-                                "description": "If the user seems to be satisfied."
-                            }
+                            
                         }
                     }
                 },
@@ -75,7 +70,7 @@ class ChatBot():
                 "type": "function",
                 "function": {
                     "name": "get_rec_from_web",
-                    "description": "Give outfit RECOMMENDATIONS based on these selected outfits from the INTERNET STORES",
+                    "description": "I am happy with the suggestions and would now like to see recommendations from STORE ONLY",
                     "parameters": {
                         "type": "object",
                         "properties": {
@@ -91,7 +86,8 @@ class ChatBot():
                         }
                     }, "required": ["like_list"]
                 }
-            }, {
+            }, 
+             {
                 "type": "function",
                 "function": {
                     "name": "get_rec_from_wardrobe",
@@ -115,6 +111,7 @@ class ChatBot():
         ]
         
     def act_on_user_input(self, message):
+
         message = [{"role": "user", "content": message}]
         self.conversation_history.extend(message)
         data = self.client.chat.completions.create(
@@ -124,6 +121,12 @@ class ChatBot():
                     )
         return self.act_on_model_output(data)
     
+    def get_photos_from_pinterest(self, keyword):
+      print(f'keyworded detected: {keyword}')
+      details = pinscrape.scraper.scrape(f'{keyword} style fashion', "output", {}, 5, 15)
+      # shutil.rmtree("output")
+      return details['url_list']
+        
     def act_on_model_output(self, data):
         if data.choices[0].finish_reason == 'tool_calls':
             # Some functional call has to happen
@@ -140,7 +143,18 @@ class ChatBot():
                 like_list = json.loads(function.arguments)['like_list']
                 output = get_rec_from_wardrobe(like_list)
                 text = f"Here are some clothes from your wardrobe that I think will suffice your needs."
+            elif function.name == 'get_pinterest_similar_pinterest':
+                like_list = json.loads(function.arguments)['like_list']
+                next_keyword = get_pinterest_similar_pinterest(like_list)
+                output = get_photos_from_pinterest(next_keyword)
+                text = f"I see you like {next_keyword}. Please let me know which styles you like?"
+            elif function.name == 'get_anti_pinterest':
+                text = f"We are sorry to hear about that. Can you please tell what you are looking for?"
+                messages = [{"role": "assistant", "content": text}]
+                self.conversation_history.extend(messages)
+                return {"text": text}
             else:
+                print(function.name)
                 raise ValueError("Function being called by GPT doesn't exist.")
 
             string_output = ', '.join(output)
@@ -152,11 +166,3 @@ class ChatBot():
             messages = [{"role": "assistant", "content": output}]
             self.conversation_history.extend(messages)
             return {"text": output}
-
-if __name__ == "__main__":
-    bot = ChatBot()
-    print(bot.get_user_input("Hello, how are you doing today?"))
-    print(bot.get_user_input("I want inspiration for an outfit for a mafia themed party?"))
-    print(bot.get_user_input("I like the 5th and 7th idea, can you please tell if there is something in my wardrobe through which I can make the outfit?"))
-    print(bot.get_user_input("What about the internet?"))
-    print(bot.get_user_input("Thank you so much!"))

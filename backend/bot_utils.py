@@ -13,11 +13,11 @@ def get_photos_from_pinterest(keyword):
   shutil.rmtree("output")
   return details['url_list']
 
-def get_rec_from_web(description):
-  print(description)
+def get_rec_from_web(links):
+  print(links)
   return ["https://content.stylitics.com/images/collage/7b2c87c8a33b31c0d62cf980d549856ecbb25f88ba71c0?png=true"]
 
-def get_rec_from_wardrobe(description):
+def get_rec_from_wardrobe(links):
   return ["link to image in wardrobe"]
 
 def get_pinterest_similar_pinterest(links):
@@ -64,12 +64,3 @@ def get_pinterest_similar_pinterest(links):
     )
   
   return response.choices[0].message.content
-
-def show_user_shop():
-  '''
-  In this method, the bot first asks if the user would want to stop, and if not then continue
-  '''
-  # Firstly ask the user if they want to stop?
-  message = [{"role": "system", "content": "Are you satisfied with the recommendations, or do you wish to see more suggestions?"}]
-  
-  
