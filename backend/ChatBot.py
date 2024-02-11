@@ -136,11 +136,11 @@ class ChatBot():
                 text = f"Here are some photos on {theme}. Please let me know which ones you like?"
             elif function.name == 'get_rec_from_web':
                 like_list = json.loads(function.arguments)['like_list']
-                output = get_rec_from_web(like_list, uid)
+                output = get_rec_from_web(like_list)
                 text = f"Here are some clothes from online stores."
             elif function.name == 'get_rec_from_wardrobe':
                 like_list = json.loads(function.arguments)['like_list']
-                output = get_rec_from_wardrobe(like_list)
+                output = get_rec_from_wardrobe(like_list, uid)
                 text = f"Here are some clothes from your wardrobe that I think will suffice your needs."
             elif function.name == 'get_pinterest_similar_pinterest':
                 like_list = json.loads(function.arguments)['like_list']

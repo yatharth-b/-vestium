@@ -3,6 +3,7 @@ from openai import OpenAI
 import os
 import shutil
 from dotenv import load_dotenv
+from backend.process_image import recommend_items
 
 load_dotenv()
 client = OpenAI()
@@ -14,11 +15,10 @@ def get_photos_from_pinterest(keyword):
   return details['url_list']
 
 def get_rec_from_web(links):
-  print(links)
-  return ["https://content.stylitics.com/images/collage/7b2c87c8a33b31c0d62cf980d549856ecbb25f88ba71c0?png=true"]
+  return recommend_items(links, only_store=True)
 
-def get_rec_from_wardrobe(links):
-  return ["link to image in wardrobe"]
+def get_rec_from_wardrobe(links, user_id):
+  return recommend_items(links, user_id, only_store=False)
 
 def get_pinterest_similar_pinterest(links):
   descriptions = []
