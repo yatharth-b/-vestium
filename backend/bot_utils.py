@@ -9,6 +9,7 @@ load_dotenv()
 client = OpenAI()
 
 def get_photos_from_pinterest(keyword):
+  keyword = ', '.join(keyword)
   print(f'keyworded detected: {keyword}')
   details = pinscrape.scraper.scrape(f'{keyword} style fashion', "output", {}, 10, 15)
   shutil.rmtree("output")
