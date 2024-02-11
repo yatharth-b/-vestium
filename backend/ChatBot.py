@@ -15,6 +15,7 @@ class ChatBot():
         
         self.tags = []
         self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        self.keywords = []
 
         self.tools = [
             {
@@ -27,7 +28,7 @@ class ChatBot():
                         "properties": {
                         "theme": {
                             "type": "string", 
-                            "description": "The theme user asked the outfit for"
+                            "description": "The theme user asked the outfit for while preserving gender"
                             }
                         }
                         },
@@ -122,8 +123,14 @@ class ChatBot():
     
     def get_photos_from_pinterest(self, keyword):
       print(f'keyworded detected: {keyword}')
+<<<<<<< HEAD
       details = pinscrape.scraper.scrape(f'{keyword} style fashion', "output", {}, 5, 15)
       shutil.rmtree("output")
+=======
+      self.keywords.append(keyword)
+      details = pinscrape.scraper.scrape(f'{",".join(self.keyword)} style fashion', "output", {}, 5, 15)
+      # shutil.rmtree("output")
+>>>>>>> eda789555afb222b9e374466b7c7abf0dac2fa2a
       return details['url_list']
 
     def human_voice(self, text):
@@ -171,7 +178,11 @@ class ChatBot():
                 print(function.name)
                 raise ValueError("Function being called by GPT doesn't exist.")
 
-            string_output = ', '.join(output)
+            if type(output) == dict:
+                string_output = str(output)
+            else:
+                string_output = ', '.join(output)
+            
             messages = [{"role": "assistant", "content": string_output}] # Because it is outputting, no need to add history here
             self.conversation_history.extend(messages)
             return {"links": output, "conversation_history": self.conversation_history, "content": text}
