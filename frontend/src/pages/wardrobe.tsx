@@ -87,6 +87,7 @@ export default function Home() {
       setError("Item name can't be empty!");
       return;
     }
+    setError(null);
 
     if (selectedFiles.length == 0) {
       setError("Please upload the picture of the item!");

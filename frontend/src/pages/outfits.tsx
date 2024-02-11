@@ -109,7 +109,7 @@ export default function Home() {
                   <div className="p-[2%] flex flex-wrap gap-x-2 gap-y-2">
                     {outfit.matches.map((rec: any) => {
                       return (
-                        <Link href={rec.productLink}>
+                        <Link href={rec.productLink ?? ""}>
                           <div className="min-w-[150px] h-[175px] relative rounded-md overflow-hidden flex">
                             <img
                               src={rec.imageLink}
