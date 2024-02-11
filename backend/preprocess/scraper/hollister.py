@@ -21,11 +21,6 @@ product_list = []
 
 scraped = defaultdict(list)
 
-# for i in range(6):
-#   r = session.get(f'https://www.hollisterco.com/shop/us/mens-tops?filtered=true&rows=90&start={i * 90}')
-
-#   product_list.extend([i for i in list(r.html.links) if i.startswith("/shop/us/p/")])
-
 type_of_cloth = 'womens-bottoms--1'
 company_name = 'abercrombie'
 
