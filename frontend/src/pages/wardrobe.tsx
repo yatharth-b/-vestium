@@ -18,7 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogClose
+  DialogClose,
 } from "@/components/ui/dialog";
 
 import { Input } from "@/components/ui/input";
@@ -67,7 +67,7 @@ export default function Home() {
           doc(db, "wardrobe", user.uid),
           { includeMetadataChanges: true },
           (doc) => {
-            console.log(doc)
+            console.log(doc);
             setItems(doc.data()?.items);
           }
         );
@@ -89,7 +89,8 @@ export default function Home() {
       return;
     }
 
-    uploadImage(user!.uid, selectedFiles[0], messageRef.current.value).then((response) => {
+    uploadImage(user!.uid, selectedFiles[0], messageRef.current.value).then(
+      (response) => {
         router.reload();
       }
     );
@@ -105,7 +106,7 @@ export default function Home() {
       className={`flex h-screen flex-col ${inter.className} bg-[#1E1E1E] overflow-hidden w-screen items-center`}
     >
       <Header></Header>
-      <div className="w-[80%] min-w-[80%] flex flex-col h-[100%] mt-[100px]">
+      <div className="w-[80%] min-w-[80%] flex flex-col mt-[100px]">
         <Card className="w-[350px] mb-10">
           <CardHeader>
             <CardTitle>Upload Clothes</CardTitle>
@@ -144,14 +145,20 @@ export default function Home() {
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-[#FFFAE1]">
             Your Wardrobe
           </h1>
-          <div className="flex flex-wrap mt-5">
+          <div className="flex flex-wrap mt-5 gap-x-2 gap-y-2">
             {items?.map((item: Item) => {
               return (
-                <Card className="min-w-[350px] h-[200px] flex-1">
-                  <CardHeader>
-                    <CardTitle>{item.name}</CardTitle>
-                  </CardHeader>
-                </Card>
+                <div
+                  className="min-w-[350px] h-[200px] flex-1 overflow-hidden relative flex"
+                  style={{
+                    backgroundImage: `url('${item.link}')`,
+                  }}
+                >
+                  <div className="w-[50%] bg-black">
+                   <CardTitle className="z-[10] p-4">{item.name}</CardTitle>
+                  </div>
+                  <div className="w-[50%]"></div>
+                </div>
               );
             })}
           </div>

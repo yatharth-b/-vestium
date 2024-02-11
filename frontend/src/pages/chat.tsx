@@ -62,15 +62,17 @@ export default function Home() {
     console.log("api history")
     console.log(apiHistory)
     if (messageRef.current && messageRef.current.value) {
-      let apiHistory = chatHistory.filter((message) => !message.links);
       let newMessage = messageRef.current.value;
       let newMessages = [
         ...chatHistory,
         {
           role: "user",
-          content: messageRef.current.value,
+          content: newMessage,
         },
       ];
+      console.log("New messages")
+      console.log(newMessages)
+      console.log("\n\n")
       setChatHistory(newMessages);
       setLoadingResponse(true);
       messageRef.current.value = "";
@@ -99,16 +101,26 @@ export default function Home() {
       console.log(response_data);
       // console.log(response_data);
       if (response.status == 200) {
-        setApiHistory(response_data.conversation_history)
-        newMessages = response_data.conversation_history;
-        newMessages[newMessages.length - 1].content = response_data.content;
+        setApiHistory(response_data.conversation_history.map((obj : any) => ({ ...obj })))
+
+
+        // let newChatHistory = [...chatHistory, response_data.conversation_history[newMessages.length - 1]];
+        let newChatHistory = [...newMessages, {
+          role: "assistant",
+          content: response_data.content,
+        }];
+        // newChatHistory[newChatHistory.length - 1].content = response_data.content;
+
+
         if (response_data.links) {
-          newMessages.push({
-            links: response_data.links
+          newChatHistory.push({
+            links:[...response_data.links]
           })
         }
 
-        setChatHistory(newMessages);
+        // let newChatHistory = [...chatHistory, {"role": "assistant", "content": response_data.content}];
+
+        setChatHistory(newChatHistory);
       }
 
       setLoadingResponse(false);
@@ -150,7 +162,7 @@ export default function Home() {
       <Header></Header>
       {user ? (
         <div className="flex flex-col w-[60%] h-[100%]">
-          <div className="flex flex-col h-[80%] max-h-[80%] items-start justify-start w-[100%] mt-[5%] overflow-y-auto">
+          <div className="flex flex-col h-[80%] max-h-[80%] items-start justify-start w-[100%] mt-[5%] overflow-y-auto scrollbar-w-2 scrollbar-track-[#1d1d1d] scrollbar-thumb-gray-500">
             {chatHistory.length == 0 ? (
               <>
                 <motion.div
@@ -177,7 +189,7 @@ export default function Home() {
                   if (message.role == "user") {
                     return (
                       <motion.div
-                        className="self-end scroll-m-20 border-b text-xl font-semibold text-[#FFFAE1] bg-[#ea580c] px-4 py-2 rounded-full mt-5"
+                        className="self-end scroll-m-20 border-b text-l font-semibold text-[#FFFAE1] bg-[#ea580c] px-4 py-2 rounded-full mt-5"
                         initial={{
                           y: 100,
                           opacity: 0,
@@ -194,7 +206,7 @@ export default function Home() {
                   } else {
                     return (
                       <motion.div
-                        className="scroll-m-20 border-b text-xl font-semibold text-[#1d1d1d] bg-[#FFFAE1] px-4 py-2 rounded-full mt-5"
+                        className="scroll-m-20 border-b text-l font-semibold text-[#1d1d1d] bg-[#FFFAE1] px-4 py-2 rounded-full mt-5"
                         initial={{
                           y: 100,
                           opacity: 0,
@@ -221,14 +233,15 @@ export default function Home() {
             )}
           </div>
 
-          <div className="flex flex-row w-[100%] items-center">
+          <div className="flex flex-row w-[100%] items-center h-[50px]">
             <Input
               type="email"
               placeholder="Ask me for any styling advice!"
               disabled={loadingResponse}
               ref={messageRef}
+              className="h-[100%]"
             />
-            <Button onClick={handleSubmitMessage} className="w-[10%] p-2">
+            <Button onClick={handleSubmitMessage} className="ml-5 w-[10%] p-2 h-[110%]">
               <span>
                 <img src="/send_symbol.svg" />
               </span>
