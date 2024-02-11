@@ -39,9 +39,11 @@ def insert_scraped_item(
     )
 
 
-def query_item(item_description: str, filter):
+def query_item(item_description: str, filter, top_k: int = 3, min_confidence: float | None = None):
     text_embedding = get_text_embedding(item_description)
     index = pinecone_client.Index("image-embeddings")
-    results = index.query(queries=[text_embedding], top_k=3, filter=filter)
-    print("here", results)
+    results = index.query(vector=text_embedding, top_k=top_k, filter=filter, include_metadata=True,)["matches"]
+    
+    if min_confidence is not None:
+        results = [res for res in results if res['score'] >= min_confidence]
     return results
