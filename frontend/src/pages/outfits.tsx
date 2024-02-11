@@ -90,7 +90,7 @@ export default function Home() {
           outfits.map((outfit: any, index: number) => {
             return (
               <div
-                className="w-[100%] h-[450px] bg-black flex-1 hover:cursor-pointer flex"
+                className="w-[100%] h-[500px] bg-black flex-1 hover:cursor-pointer flex"
                 onClick={() => {
                   setModalOpen(true);
                   setSelectedIndex(index);
@@ -106,7 +106,7 @@ export default function Home() {
                   <h2 className="scroll-m-20 border-b py-5 text-3xl font-semibold tracking-tight first:mt-0 px-[2%]">
                     Outfit Recommendation from {outfit.timeCreated}.
                   </h2>
-                  <div className="p-[2%] flex flex-wrap gap-x-2">
+                  <div className="p-[2%] flex flex-wrap gap-x-2 gap-y-2">
                     {outfit.matches.map((rec: any) => {
                       return (
                         <Link href={rec.productLink}>
@@ -115,7 +115,7 @@ export default function Home() {
                               src={rec.imageLink}
                               className="w-[100%] h-[100%] object-cover absolute"
                             ></img>
-                            <div className="bg-gradient-to-r from-black absolute object-cover w-[100%] h-[100%]"></div>
+                            <div className="bg-gradient-to-tr from-black absolute object-cover w-[100%] h-[100%]"></div>
                             <div className="absolute text-white p-[20px] self-end">
                               <div>{rec.name}</div>
                             </div>

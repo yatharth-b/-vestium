@@ -44,7 +44,7 @@ export default function Home() {
               opacity:1
             }} onClick={() => {
               signInWithGoogle().then((result : any) => {
-                router.push('/home')
+                router.push('/chat')
               })
             }}>
               <span><img src="/google_icon.png" className="w-5 mr-2"/></span>
