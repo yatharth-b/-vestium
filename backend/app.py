@@ -28,8 +28,9 @@ def chat_gpt_3():
 
     conversation_history = data["conversation_history"] if "conversation_history" in data else None
     keywords = data["keywords"] if "keywords" in data else None
+    user_id = data["userId"] if "userId" in data else ""
     chatbot_text = ChatBot(conversation_history, keywords)
-    output = chatbot_text.act_on_user_input('userId')
+    output = chatbot_text.act_on_user_input(user_id)
     return json.dumps(output)
 
 @app.route("/wardrobe", methods=["POST"])
@@ -42,6 +43,7 @@ def add_image_to_vectordb():
     try:
         process_uploaded_image(image_url, user_id, name)
     except Exception as e:
+        print("ERROR", e)
         return {"status": "error", "message": str(e)}
     
     return {"status": "success"}

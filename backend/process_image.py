@@ -19,7 +19,7 @@ def process_scraped_image(image_link: str, outfit_links: List[str], product_link
     insert_scraped_item(item_description, image_link, outfit_links, product_link)
 
 def process_uploaded_image(image_link: str, user_id: str, name: str):
-    image_description = llava_image_to_text_multiple_items(image_link)   
+    image_description = llava_image_to_text_multiple_items(image_link)
     insert_uploaded_item(image_description, image_link, user_id, name)
     
 def recommend_items(image_links: List[str], user_id: str = "", only_store: bool = True):
@@ -38,16 +38,16 @@ def recommend_items(image_links: List[str], user_id: str = "", only_store: bool 
     # print(all_item_descriptions)
     # filtered_descriptions = extract_unique_items(all_item_descriptions)
     # print(filtered_descriptions)
-    
+    min_confidence = 0.85
     res = []
     for desc in item_descriptions:
         desc_res = []
         if only_store:
-            desc_res = query_item(desc, { "source": "Scraped" }, top_k=3, min_confidence=0.9)
+            desc_res = query_item(desc, { "source": "Scraped" }, top_k=3, min_confidence=min_confidence)
         else:
-            desc_res = query_item(desc, { "source": "User", "user_id": user_id }, top_k=3, min_confidence=0.9)
+            desc_res = query_item(desc, {"$and": [{"source": "User"}, {"user_id": user_id}]}, top_k=3, min_confidence=min_confidence)
             if len(desc_res) < 3:
-                desc_res.extend(query_item(desc, { "source": "Scraped" }, top_k=3 - len(desc_res), min_confidence=0.9))
+                desc_res.extend(query_item(desc, { "source": "Scraped" }, top_k=3 - len(desc_res), min_confidence=min_confidence),)
         
         for match in desc_res:
             temp = {}
