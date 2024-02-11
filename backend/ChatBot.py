@@ -108,7 +108,7 @@ class ChatBot():
             }
         ]
         
-    def act_on_user_input(self, message):
+    def act_on_user_input(self):
 
         # message = [{"role": "user", "content": message}]
         # self.conversation_history.extend(message)
@@ -129,6 +129,7 @@ class ChatBot():
         if data.choices[0].finish_reason == 'tool_calls':
             # Some functional call has to happen
             function = data.choices[0].message.tool_calls[0].function
+            text = ""
             if function.name == 'get_photos_from_pinterest':
                 theme = json.loads(function.arguments)['theme']
                 output = get_photos_from_pinterest(theme)
@@ -163,4 +164,4 @@ class ChatBot():
             output = data.choices[0].message.content
             messages = [{"role": "assistant", "content": output}]
             self.conversation_history.extend(messages)
-            return {"conversation_history": self.conversation_history, "content": text}
+            return {"conversation_history": self.conversation_history, "content": output}

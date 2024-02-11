@@ -16,8 +16,9 @@ import { Button } from "@/components/ui/button";
 import { userAgent } from "next/server";
 
 type ChatMessage = {
-  role: string;
-  content: string;
+  role?: string;
+  content?: string;
+  links?: string[];
 };
 
 const inter = Inter({ subsets: ["latin"] });
@@ -28,6 +29,7 @@ export default function Home() {
   const { setTheme } = useTheme();
 
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
+  const [apiHistory, setApiHistory] = useState<ChatMessage[]>([])
   const [loadingResponse, setLoadingResponse] = useState(false);
   const [user, setUser] = useState<any>(null);
 
@@ -57,9 +59,11 @@ export default function Home() {
   }, []);
 
   const handleSubmitMessage = async () => {
-    console.log("ok");
+    console.log("api history")
+    console.log(apiHistory)
     if (messageRef.current && messageRef.current.value) {
-      console.log("ok");
+      let apiHistory = chatHistory.filter((message) => !message.links);
+      let newMessage = messageRef.current.value;
       let newMessages = [
         ...chatHistory,
         {
@@ -71,19 +75,39 @@ export default function Home() {
       setLoadingResponse(true);
       messageRef.current.value = "";
 
-      const response = await fetch("/api/exec", {
+      let newAPIHistory = [
+        ...apiHistory,
+        {
+          role: "user",
+          content: newMessage,
+        },
+      ]
+
+      console.log(newAPIHistory)
+
+      const response = await fetch("http://localhost:3001/recommend/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          messages: newMessages,
+          conversation_history: newAPIHistory,
         }),
       });
       let response_data = await response.json();
+
       console.log(response_data);
+      // console.log(response_data);
       if (response.status == 200) {
-        newMessages = [...newMessages, response_data.message.message];
+        setApiHistory(response_data.conversation_history)
+        newMessages = response_data.conversation_history;
+        newMessages[newMessages.length - 1].content = response_data.content;
+        if (response_data.links) {
+          newMessages.push({
+            links: response_data.links
+          })
+        }
+
         setChatHistory(newMessages);
       }
 
@@ -153,7 +177,7 @@ export default function Home() {
                   if (message.role == "user") {
                     return (
                       <motion.div
-                        className="self-end scroll-m-20 border-b text-xl font-semibold text-[#FFFAE1] bg-[#ea580c] px-4 py-2 rounded-full"
+                        className="self-end scroll-m-20 border-b text-xl font-semibold text-[#FFFAE1] bg-[#ea580c] px-4 py-2 rounded-full mt-5"
                         initial={{
                           y: 100,
                           opacity: 0,
@@ -170,7 +194,7 @@ export default function Home() {
                   } else {
                     return (
                       <motion.div
-                        className="scroll-m-20 border-b text-xl font-semibold text-[#1d1d1d] bg-[#FFFAE1] px-4 py-2 rounded-full"
+                        className="scroll-m-20 border-b text-xl font-semibold text-[#1d1d1d] bg-[#FFFAE1] px-4 py-2 rounded-full mt-5"
                         initial={{
                           y: 100,
                           opacity: 0,

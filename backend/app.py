@@ -26,8 +26,9 @@ def check_connectivity():
 def chat_gpt_3():
     data = request.get_json()
     chatbot_text = ChatBot()
+    print(data)
     chatbot_text.conversation_history = data['conversation_history']
-    output = chatbot_text.act_on_user_input(data['message'])
+    output = chatbot_text.act_on_user_input()
     return json.dumps(output)
 
 @app.route("/wardrobe", methods=["POST"])

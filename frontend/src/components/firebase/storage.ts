@@ -18,18 +18,20 @@ export const uploadImage = async (userId: string, file: File, name : string) => 
     () => {
       getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
         console.log('File available at', downloadURL);
-        let vec_response = await fetch('http://localhost:3001/wardrobe', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            userId,
-            imageUrl: downloadURL
-          })
-        })
+        // let vec_response = await fetch('http://localhost:3001/wardrobe', {
+        //   method: 'POST',
+        //   headers: {
+        //     'Content-Type': 'application/json'
+        //   },
+        //   body: JSON.stringify({
+        //     userId,
+        //     imageUrl: downloadURL
+        //   })
+        // })
+
+        // console.log(vec_response)
         
-        if (vec_response.status == 200) {
+        // if (vec_response.status == 200) {
           const snap = await getDoc(doc(db, "wardrobe", userId));
           const items = snap.data()?.items ?? [];
           items.push({
@@ -37,7 +39,7 @@ export const uploadImage = async (userId: string, file: File, name : string) => 
             name: name
           })
           await setDoc(doc(db, "wardrobe", userId), { items }, { merge : true });
-        }
+        // }
       
       });
     }
