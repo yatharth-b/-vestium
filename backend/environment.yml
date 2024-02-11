@@ -9,4 +9,5 @@ dependencies:
     - pinecone-client==3.0.0
     - python-dotenv
     - replicate
-    - pinscrape
+    - flask
+    - flask_cors

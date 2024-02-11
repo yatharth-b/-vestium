@@ -98,7 +98,7 @@ class ChatBot():
             }
         ]
         
-    def get_user_input(self, message):
+    def act_on_user_input(self, message):
         message = [{"role": "user", "content": message}]
         self.conversation_history.extend(message)
         data = self.client.chat.completions.create(
@@ -115,24 +115,27 @@ class ChatBot():
             if function.name == 'get_photos_from_pinterest':
                 theme = json.loads(function.arguments)['theme']
                 output = get_photos_from_pinterest(theme)
+                text = f"Here are some photos on {theme}. Please let me know which ones you like?"
             elif function.name == 'get_rec_from_web':
                 like_list = json.loads(function.arguments)['like_list']
                 output = get_rec_from_web(like_list)
+                text = f"Here are some clothes from online stores."
             elif function.name == 'get_rec_from_wardrobe':
                 like_list = json.loads(function.arguments)['like_list']
                 output = get_rec_from_wardrobe(like_list)
+                text = f"Here are some clothes from your wardrobe that I think will suffice your needs."
             else:
                 raise ValueError("Function being called by GPT doesn't exist.")
 
             string_output = ', '.join(output)
             messages = [{"role": "assistant", "content": string_output}] # Because it is outputting, no need to add history here
             self.conversation_history.extend(messages)
-            return output
+            return {"links": output, "text": text}
         else:
             output = data.choices[0].message.content
             messages = [{"role": "assistant", "content": output}]
             self.conversation_history.extend(messages)
-            return output
+            return {"text": output}
 
 if __name__ == "__main__":
     bot = ChatBot()
