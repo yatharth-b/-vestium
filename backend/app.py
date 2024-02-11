@@ -41,7 +41,9 @@ def add_image_to_vectordb():
     name = data["name"]
 
     try:
+        print("here1")
         process_uploaded_image(image_url, user_id, name)
+        print("here2")
     except Exception as e:
         print("ERROR", e)
         return {"status": "error", "message": str(e)}

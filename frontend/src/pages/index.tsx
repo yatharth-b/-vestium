@@ -21,7 +21,7 @@ export default function Home() {
       }
 
       setVisible(new_arr);
-    }, 500)
+    }, 750)
   })
 
   const router = useRouter()
@@ -52,10 +52,10 @@ export default function Home() {
             </motion.div>
           </div>
         </div>
-        <img src="/scratches.png" className={`absolute w-[45%] translate-x-[-200px] rotate-45 opacity-${visible[0] ? 100 : 0} z-[-1]`}></img>
-        <img src="/scratches.png" className={`absolute w-[45%] translate-x-[200px] rotate-45 opacity-${visible[1] ? 100 : 0} z-[-1]`} ></img>
-        <img src="/scratches.png" className={`absolute w-[45%] translate-y-[200px] translate-x-[800px] opacity-${visible[2] ? 100 : 0} z-[-1]`}></img>
-        <img src="/scratches.png" className={`absolute w-[45%] translate-x-[-200px] rotate-45 opacity-${visible[3] ? 100 : 0} z-[-1]`}></img>
+        <img src="/scratches.png" className={`absolute w-[45%] translate-x-[-200px] rotate-45 opacity-${visible[0] ? 100 : 0}`}></img>
+        <img src="/scratches.png" className={`absolute w-[45%] translate-x-[200px] rotate-45 opacity-${visible[1] ? 100 : 0}`} ></img>
+        <img src="/scratches.png" className={`absolute w-[45%] translate-y-[200px] translate-x-[800px] opacity-${visible[2] ? 100 : 0}`}></img>
+        <img src="/scratches.png" className={`absolute w-[45%] translate-x-[-200px] rotate-45 opacity-${visible[3] ? 100 : 0}`}></img>
       </main>
   );
 }

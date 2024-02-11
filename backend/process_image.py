@@ -19,8 +19,11 @@ def process_scraped_image(image_link: str, outfit_links: List[str], product_link
     insert_scraped_item(item_description, image_link, outfit_links, product_link)
 
 def process_uploaded_image(image_link: str, user_id: str, name: str):
+    print("here3")
     image_description = llava_image_to_text_multiple_items(image_link)
+    print("here4")
     insert_uploaded_item(image_description, image_link, user_id, name)
+    print("here5")
     
 def recommend_items(image_links: List[str], user_id: str = "", only_store: bool = True):
     chosen_link = random.sample(image_links, 1)

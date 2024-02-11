@@ -174,7 +174,7 @@ class ChatBot():
 
             if function.name == 'get_photos_from_pinterest':
                 theme = json.loads(function.arguments)['theme']
-                self.tags.append(theme)
+                self.tags.insert(0, theme)
                 output = get_photos_from_pinterest(self.tags)
                 if text == "":
                     text = self.human_voice(f"Here are some photos on {theme}. Please let me know which ones you like?")                
@@ -189,7 +189,7 @@ class ChatBot():
             elif function.name == 'get_pinterest_similar_pinterest':
                 like_list = json.loads(function.arguments)['like_list']
                 next_keyword = get_pinterest_similar_pinterest(like_list)
-                self.tags.append(next_keyword)
+                self.tags.insert(0, next_keyword)
                 output = get_photos_from_pinterest(self.tags)
                 if text == "":
                     text = self.human_voice(f"I see you like {next_keyword}. Please let me know which of the following styles you like?")
