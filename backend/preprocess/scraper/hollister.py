@@ -5,6 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from collections import defaultdict
 from selenium.webdriver.chrome.options import Options
 from requests_html import HTMLSession
+import os
 
 import pickle
 
@@ -15,10 +16,9 @@ Creates a pickle file such that it is a dictionary that maps link to product: ([
 
 
 chrome_options = Options()
-# chrome_options.add_argument("--headless")
+chrome_options.add_argument('--headless=new')
 
 session = HTMLSession()
-
 product_list = []
 
 scraped = defaultdict(list)
@@ -28,13 +28,12 @@ scraped = defaultdict(list)
 
 #   product_list.extend([i for i in list(r.html.links) if i.startswith("/shop/us/p/")])
 
-type_of_cloth = 'mens-bottoms--1'
+type_of_cloth = 'womens-tops'
+company_name = 'hollisterco'
 
-
-r = session.get(f'https://www.abercrombie.com/shop/us/{type_of_cloth}?filtered=true&rows=90&start=0')
-
-
-product_list.extend([i for i in list(r.html.links) if i.startswith("/shop/us/p/")])
+for i in range(6):
+    r = session.get(f'https://www.{company_name}.com/shop/us/{type_of_cloth}?filtered=true&rows=90&start={i * 90}')
+    product_list.extend([i for i in list(r.html.links) if i.startswith("/shop/us/p/")])
 
 def get_rec_images(url):
     try:
@@ -61,15 +60,21 @@ def get_rec_images(url):
 
 j = 0
 
+
+
 for i in product_list:
-    url = f'https://www.abercrombie.com{i}'
+    file_no = j // 90
+    url = f'https://www.{company_name}.com{i}'
     print(f'url: {url}')
     x = get_rec_images(url)
-    scraped[f'https://www.abercrombie.com{i}'] = x
-    with open(f"{type_of_cloth}.pickle", 'wb') as file:
+    scraped[f'https://www.{company_name}.com{i}'] = x
+    if not os.path.exists(f"{company_name}/{type_of_cloth}"):
+        os.makedirs(f"{company_name}/{type_of_cloth}")
+    with open(f"{company_name}/{type_of_cloth}/{file_no}.pickle", 'wb') as file:
         pickle.dump(scraped, file)
         
     print(j)
     j += 1
+    
 
 print(f'Items saved to {type_of_cloth}.pickle')
