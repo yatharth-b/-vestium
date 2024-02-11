@@ -108,7 +108,7 @@ class ChatBot():
             }
         ]
         
-    def act_on_user_input(self):
+    def act_on_user_input(self, uid):
 
         # message = [{"role": "user", "content": message}]
         # self.conversation_history.extend(message)
@@ -117,7 +117,7 @@ class ChatBot():
                     messages=self.conversation_history,
                     tools=self.tools,
                     )
-        return self.act_on_model_output(data)
+        return self.act_on_model_output(data, uid)
     
     def get_photos_from_pinterest(self, keyword):
       print(f'keyworded detected: {keyword}')
@@ -125,7 +125,7 @@ class ChatBot():
       # shutil.rmtree("output")
       return details['url_list']
         
-    def act_on_model_output(self, data):
+    def act_on_model_output(self, data, uid):
         if data.choices[0].finish_reason == 'tool_calls':
             # Some functional call has to happen
             function = data.choices[0].message.tool_calls[0].function
@@ -136,7 +136,7 @@ class ChatBot():
                 text = f"Here are some photos on {theme}. Please let me know which ones you like?"
             elif function.name == 'get_rec_from_web':
                 like_list = json.loads(function.arguments)['like_list']
-                output = get_rec_from_web(like_list)
+                output = get_rec_from_web(like_list, uid)
                 text = f"Here are some clothes from online stores."
             elif function.name == 'get_rec_from_wardrobe':
                 like_list = json.loads(function.arguments)['like_list']
