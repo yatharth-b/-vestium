@@ -10,13 +10,13 @@ from backend.bot_utils import get_photos_from_pinterest, get_rec_from_wardrobe, 
 load_dotenv()
 
 class ChatBot():
-    def __init__(self, conversation_history, tags) -> None:
-        if conversation_history:
+    def __init__(self, conversation_history = None, tags = None) -> None:
+        if conversation_history is not None:
             self.conversation_history = conversation_history
         else:
             self.conversation_history = [{"role": "system", "content": "You are a useful stylist called Vestium. You converse with users and help people plan their outfits according to their needs. You do this by finding inspiration from pinterest(searching from web) and vector stores of user's wardrobes using function calls"}]
         
-        if tags:
+        if tags is not None:
             self.tags = tags
         else:
             self.tags = []
@@ -183,8 +183,9 @@ class ChatBot():
             
             messages = [{"role": "assistant", "content": string_output}] # Because it is outputting, no need to add history here
             self.conversation_history.extend(messages)
-            if function == "get_rec_from_wardrobe" or function == "get_rec_from_web":
+            if function.name == "get_rec_from_wardrobe" or function.name == "get_rec_from_web":
                 return {"links": [], "conversation_history": self.conversation_history, "content": text, "keywords": self.tags, "recommendations": output}
+            print("here", self.tags)
             return {"links": output, "conversation_history": self.conversation_history, "content": text, "keywords": self.tags}
         else:
             output = data.choices[0].message.content

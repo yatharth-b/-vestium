@@ -87,6 +87,7 @@ export default function Home() {
       ];
 
       console.log(newAPIHistory);
+      console.log("before", keywords)
 
       const response = await fetch("http://localhost:3001/recommend/chat", {
         method: "POST",
@@ -104,6 +105,7 @@ export default function Home() {
       console.log(response_data);
       // console.log(response_data);
       if (response.status == 200) {
+        console.log("after", response_data.keywords);
         setApiHistory(
           response_data.conversation_history.map((obj: any) => ({ ...obj }))
         );
@@ -264,6 +266,10 @@ export default function Home() {
               </>
             )}
           </div>
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmitMessage()
+          }}>
           <div className="flex flex-row w-[100%] items-center h-[10] pb-10">
             <Input
               type="email"
@@ -282,6 +288,7 @@ export default function Home() {
               </span>
             </Button>
           </div>
+          </form>
         </div>
       ) : (
         <></>
