@@ -53,10 +53,11 @@ def recommend_items(image_links: List[str], user_id: str = "", only_store: bool 
             temp = {}
             if match["metadata"]["source"] == "User":
                 temp["name"] = match["metadata"]["name"]
-                temp["image_link"] = match["metadata"]["image_link"]
+                temp["imageLink"] = match["metadata"]["image_link"]
             else:
                 product_link = match["metadata"]["product_link"]
-                temp["name"], temp["image_link"] = get_rec_name_and_image(product_link)
+                temp["name"], temp["imageLink"] = get_rec_name_and_image(product_link)
+                temp["productLink"] = product_link
             res.append(temp)
     return res
 
