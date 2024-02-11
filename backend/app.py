@@ -18,6 +18,8 @@ if PORT is not None:
 else:
     PORT = 3001
 
+chatbot_text = ChatBot()
+
 @app.route("/health")
 def check_connectivity():
     return {"hello": "world"}
@@ -26,12 +28,11 @@ def check_connectivity():
 def chat_gpt_3():
     data = request.get_json()
 
-    if data['conversation_history'][0]['user'] != "system":
+    if len(data['conversation_history']) == 0:
         data['conversation_history'].insert(0, {"user": "system", "content": "You are a useful stylist that helps people plan their clothes along with finding them from pinterest(searching from web) and vectordatabases that are function calls"})
 
-    chatbot_text = ChatBot()
     chatbot_text.conversation_history = data['conversation_history']
-    output = chatbot_text.act_on_user_input(data['userId'])
+    output = chatbot_text.act_on_user_input('userId')
     return json.dumps(output)
 
 @app.route("/wardrobe", methods=["POST"])
