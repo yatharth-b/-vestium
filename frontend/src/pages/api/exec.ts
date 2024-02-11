@@ -1,23 +1,23 @@
-import { m } from 'framer-motion';
-import { NextRequest } from 'next/server';
-import { NextResponse } from 'next/server';
+import type { NextApiRequest, NextApiResponse } from "next";
 
-import OpenAI from 'openai';
+import OpenAI from "openai";
 
 const openai = new OpenAI();
- 
-export async function POST(req: NextRequest) {
 
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   let messages_ = [];
-  
-  let data = await req.json();
 
-  messages_ = data.messages
+  let data = await req.body;
+  console.log(data)
+
+  messages_ = data.messages;
 
   const ai_response = await openai.chat.completions.create({
     model: "gpt-3.5-turbo",
     messages: messages_,
-  })
+  });
 
-  return NextResponse.json({ message : ai_response.choices[0] });
+  console.log(ai_response);
+
+  return res.json({ message: ai_response.choices[0] });
 }
