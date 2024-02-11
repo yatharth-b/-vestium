@@ -1,7 +1,9 @@
 import { storage } from "./firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { db } from "./firebase";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 
-export const uploadImage = async (userId: string, file: File) => {
+export const uploadImage = async (userId: string, file: File, name : string, uid:string) => {
   const storageRef = ref(storage, `images/${userId}/${file.name}`);
   const uploadTask = uploadBytesResumable(storageRef, file);
 
@@ -14,9 +16,9 @@ export const uploadImage = async (userId: string, file: File) => {
       console.error(error);
     }, 
     () => {
-      getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+      getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
         console.log('File available at', downloadURL);
-        fetch('http://localhost:3001/wardrobe', {
+        let vec_response = await fetch('http://localhost:3001/wardrobe', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -26,6 +28,17 @@ export const uploadImage = async (userId: string, file: File) => {
             imageUrl: downloadURL
           })
         })
+        
+        if (vec_response.status == 200) {
+          const snap = await getDoc(doc(db, "wardrobe", uid));
+          const items = snap.data()?.items ?? [];
+          items.push({
+            link: downloadURL,
+            name: name
+          })
+          await updateDoc(doc(db, "users", uid), { items });
+        }
+      
       });
     }
   );
