@@ -34,3 +34,8 @@ def filter_image_description(description: str) -> str:
         temperature=0.5,
     )
     return response.choices[0].message.content
+
+
+if __name__ == "__main__":
+    embedding = get_text_embedding("These are casual pants with a natural, leafy print, featuring various shades of green and white. The pants have an elastic waistband for a comfortable fit and likely a drawstring for adjustment. The leg hems also appear to have elastic, providing a snug fit around the ankles. The fabric looks soft and lightweight, suitable for relaxed wear.")
+    print(embedding)
