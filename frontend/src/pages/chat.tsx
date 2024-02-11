@@ -334,9 +334,11 @@ export default function Home() {
           {recData ? <div className="w-[100%] flex flex-col justify-center items-center p-10">
             <img src={`${recData.targetImageLink}`} className="w-[150px] rounded-lg"></img>
           </div> : <></>}
+          <DrawerFooter>
           <Link href="/outfits">
-            <Button variant="outline" className="p-10">Check it out!</Button>
+            <Button className="w-[100%]">Check it out!</Button>
           </Link>
+          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     </main>
