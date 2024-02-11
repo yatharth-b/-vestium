@@ -13,8 +13,6 @@ import pickle
 Creates a pickle file such that it is a dictionary that maps link to product: ([list of outfits image], product image link)
 '''
 
-
-
 chrome_options = Options()
 chrome_options.add_argument('--headless=new')
 
@@ -28,12 +26,12 @@ scraped = defaultdict(list)
 
 #   product_list.extend([i for i in list(r.html.links) if i.startswith("/shop/us/p/")])
 
-type_of_cloth = 'womens-tops'
-company_name = 'hollisterco'
+type_of_cloth = 'womens-bottoms--1'
+company_name = 'abercrombie'
 
-for i in range(6):
-    r = session.get(f'https://www.{company_name}.com/shop/us/{type_of_cloth}?filtered=true&rows=90&start={i * 90}')
-    product_list.extend([i for i in list(r.html.links) if i.startswith("/shop/us/p/")])
+
+r = session.get(f'https://www.{company_name}.com/shop/us/{type_of_cloth}?filtered=true&rows=90&start=90')
+product_list = [i for i in list(r.html.links) if i.startswith("/shop/us/p/")][:51]
 
 def get_rec_images(url):
     try:
@@ -68,9 +66,9 @@ for i in product_list:
     print(f'url: {url}')
     x = get_rec_images(url)
     scraped[f'https://www.{company_name}.com{i}'] = x
-    if not os.path.exists(f"{company_name}/{type_of_cloth}"):
-        os.makedirs(f"{company_name}/{type_of_cloth}")
-    with open(f"{company_name}/{type_of_cloth}/{file_no}.pickle", 'wb') as file:
+    if not os.path.exists(f"final_data/{company_name}"):
+        os.makedirs(f"final_data/{company_name}")
+    with open(f"final_data/{company_name}/{type_of_cloth}.pickle", 'wb') as file:
         pickle.dump(scraped, file)
         
     print(j)
