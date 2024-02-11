@@ -1,4 +1,4 @@
-Vestium is your new AI-powered fashion and shopping assistant.
+**Vestium** is your new AI-powered fashion and shopping assistant.
 
 # The problem Vestium solves
 Have you ever felt like you want to get an outfit that looks ‘casual yet smart’ but can’t exactly find what you want online? We've got you covered. Vestium is your AI-powered styling assistant and mood-board. Simply describe the vibe and kind of outfit you would like to buy or match, and it’ll scour the web for you. Try out prompts like _‘normcore casualwear’_, _‘mafia-themed party’_ or _‘ethnic dresses’_ and Vestium provides you plenty of options and even generates new ideas from Pinterest. Chat with the assistant and narrow down your search until something catches your eye, and pick yourself the perfect outfit. You’ll get matches that link to available items on online clothing stores, or ask Vestium to check your existing wardrobe for a match. Our app returns a carefully compiled, AI-matched mood-board of clothes pairings from across the internet so you don't have to spend hours looking at every brand’s website to shop for new clothes.
