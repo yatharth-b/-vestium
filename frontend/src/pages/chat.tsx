@@ -187,7 +187,7 @@ export default function Home() {
             ) : (
               <>
                 <div className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0 text-[#FFFAE1] text-left">
-                  Hi Yatharth, how can I help you today?
+                  Hi {user.displayName}, how can I help you today?
                 </div>
                 {chatHistory.map((message, i) => {
                   if (message.role == "user") {
