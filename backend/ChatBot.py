@@ -14,6 +14,7 @@ class ChatBot():
         self.conversation_history = [{"role": "system", "content": "You are a useful stylist that helps people plan their clothes along with finding them from pinterest(searching from web) and vectordatabases that are function calls"}]
         
         self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        self.keywords = []
 
         self.tools = [
             {
@@ -26,7 +27,7 @@ class ChatBot():
                         "properties": {
                         "theme": {
                             "type": "string", 
-                            "description": "The theme user asked the outfit for"
+                            "description": "The theme user asked the outfit for while preserving gender"
                             }
                         }
                         },
@@ -121,7 +122,8 @@ class ChatBot():
     
     def get_photos_from_pinterest(self, keyword):
       print(f'keyworded detected: {keyword}')
-      details = pinscrape.scraper.scrape(f'{keyword} style fashion', "output", {}, 5, 15)
+      self.keywords.append(keyword)
+      details = pinscrape.scraper.scrape(f'{",".join(self.keyword)} style fashion', "output", {}, 5, 15)
       # shutil.rmtree("output")
       return details['url_list']
         
@@ -156,7 +158,11 @@ class ChatBot():
                 print(function.name)
                 raise ValueError("Function being called by GPT doesn't exist.")
 
-            string_output = ', '.join(output)
+            if type(output) == dict:
+                string_output = str(output)
+            else:
+                string_output = ', '.join(output)
+            
             messages = [{"role": "assistant", "content": string_output}] # Because it is outputting, no need to add history here
             self.conversation_history.extend(messages)
             return {"links": output, "conversation_history": self.conversation_history, "content": text}

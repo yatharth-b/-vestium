@@ -8,7 +8,7 @@ import Header from "@/components/header/header";
 import { app, auth, db, storage } from "@/components/firebase/firebase";
 
 import { Input } from "@/components/ui/input";
-import { onAuthStateChanged } from "firebase/auth";
+import { User, onAuthStateChanged } from "firebase/auth";
 
 import { useTheme } from "next-themes";
 
@@ -31,7 +31,7 @@ export default function Home() {
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [apiHistory, setApiHistory] = useState<ChatMessage[]>([])
   const [loadingResponse, setLoadingResponse] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   const messageRef = useRef<HTMLInputElement>(null);
 
@@ -94,6 +94,7 @@ export default function Home() {
         },
         body: JSON.stringify({
           conversation_history: newAPIHistory,
+          userId: user!.uid,
         }),
       });
       let response_data = await response.json();
@@ -232,7 +233,6 @@ export default function Home() {
               </>
             )}
           </div>
-
           <div className="flex flex-row w-[100%] items-center h-[50px]">
             <Input
               type="email"
