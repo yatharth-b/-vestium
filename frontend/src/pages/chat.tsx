@@ -29,6 +29,7 @@ export default function Home() {
   const { setTheme } = useTheme();
 
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
+  const [keywords, setKeywords] = useState<string[]>([]);
   const [apiHistory, setApiHistory] = useState<ChatMessage[]>([]);
   const [loadingResponse, setLoadingResponse] = useState(false);
   const [user, setUser] = useState<User | null>(null);
@@ -94,6 +95,7 @@ export default function Home() {
         },
         body: JSON.stringify({
           conversation_history: newAPIHistory,
+          keywords,
           userId: user!.uid,
         }),
       });
@@ -105,6 +107,7 @@ export default function Home() {
         setApiHistory(
           response_data.conversation_history.map((obj: any) => ({ ...obj }))
         );
+        setKeywords(response_data.keywords);
 
         // let newChatHistory = [...chatHistory, response_data.conversation_history[newMessages.length - 1]];
         let newChatHistory = [

@@ -10,12 +10,18 @@ from backend.bot_utils import get_photos_from_pinterest, get_rec_from_wardrobe, 
 load_dotenv()
 
 class ChatBot():
-    def __init__(self) -> None:
-        self.conversation_history = [{"role": "system", "content": "You are a useful stylist that helps people plan their clothes along with finding them from pinterest(searching from web) and vectordatabases that are function calls"}]
+    def __init__(self, conversation_history, tags) -> None:
+        if conversation_history:
+            self.conversation_history = conversation_history
+        else:
+            self.conversation_history = [{"role": "system", "content": "You are a useful stylist that helps people plan their clothes along with finding them from pinterest(searching from web) and vectordatabases that are function calls"}]
         
-        self.tags = []
+        if tags:
+            self.tags = tags
+        else:
+            self.tags = []
+            
         self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        self.keywords = []
 
         self.tools = [
             {
@@ -120,13 +126,6 @@ class ChatBot():
                     tools=self.tools,
                     )
         return self.act_on_model_output(data, uid)
-    
-    def get_photos_from_pinterest(self, keyword):
-      print(f'keyworded detected: {keyword}')
-      self.keywords.append(keyword)
-      details = pinscrape.scraper.scrape(f'{",".join(self.keyword)} style fashion', "output", {}, 5, 15)
-      # shutil.rmtree("output")
-      return details['url_list']
 
     def human_voice(self, text):
         data = self.client.chat.completions.create(
@@ -173,14 +172,12 @@ class ChatBot():
                 print(function.name)
                 raise ValueError("Function being called by GPT doesn't exist.")
 
-            if type(output) == dict:
-                string_output = str(output)
-            else:
-                string_output = ', '.join(output)
+            # string_output = ', '.join(output)
+            string_output = str(output)
             
             messages = [{"role": "assistant", "content": string_output}] # Because it is outputting, no need to add history here
             self.conversation_history.extend(messages)
-            return {"links": output, "conversation_history": self.conversation_history, "content": text}
+            return {"links": output, "conversation_history": self.conversation_history, "content": text, "keywords": self.tags}
         else:
             output = data.choices[0].message.content
             messages = [{"role": "assistant", "content": output}]
