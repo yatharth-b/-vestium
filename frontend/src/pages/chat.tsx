@@ -29,7 +29,7 @@ export default function Home() {
   const { setTheme } = useTheme();
 
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
-  const [apiHistory, setApiHistory] = useState<ChatMessage[]>([])
+  const [apiHistory, setApiHistory] = useState<ChatMessage[]>([]);
   const [loadingResponse, setLoadingResponse] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
@@ -59,8 +59,8 @@ export default function Home() {
   }, []);
 
   const handleSubmitMessage = async () => {
-    console.log("api history")
-    console.log(apiHistory)
+    console.log("api history");
+    console.log(apiHistory);
     if (messageRef.current && messageRef.current.value) {
       let newMessage = messageRef.current.value;
       let newMessages = [
@@ -70,9 +70,9 @@ export default function Home() {
           content: newMessage,
         },
       ];
-      console.log("New messages")
-      console.log(newMessages)
-      console.log("\n\n")
+      console.log("New messages");
+      console.log(newMessages);
+      console.log("\n\n");
       setChatHistory(newMessages);
       setLoadingResponse(true);
       messageRef.current.value = "";
@@ -83,9 +83,9 @@ export default function Home() {
           role: "user",
           content: newMessage,
         },
-      ]
+      ];
 
-      console.log(newAPIHistory)
+      console.log(newAPIHistory);
 
       const response = await fetch("http://localhost:3001/recommend/chat", {
         method: "POST",
@@ -102,21 +102,24 @@ export default function Home() {
       console.log(response_data);
       // console.log(response_data);
       if (response.status == 200) {
-        setApiHistory(response_data.conversation_history.map((obj : any) => ({ ...obj })))
-
+        setApiHistory(
+          response_data.conversation_history.map((obj: any) => ({ ...obj }))
+        );
 
         // let newChatHistory = [...chatHistory, response_data.conversation_history[newMessages.length - 1]];
-        let newChatHistory = [...newMessages, {
-          role: "assistant",
-          content: response_data.content,
-        }];
+        let newChatHistory = [
+          ...newMessages,
+          {
+            role: "assistant",
+            content: response_data.content,
+          },
+        ];
         // newChatHistory[newChatHistory.length - 1].content = response_data.content;
-
 
         if (response_data.links) {
           newChatHistory.push({
-            links:[...response_data.links]
-          })
+            links: [...response_data.links],
+          });
         }
 
         // let newChatHistory = [...chatHistory, {"role": "assistant", "content": response_data.content}];
@@ -204,6 +207,14 @@ export default function Home() {
                         {message.content}
                       </motion.div>
                     );
+                  } else if (message.links) {
+                    return (
+                      <div className="flex flex-wrap gap-x-2 gap-y-2 py-4 px-2">
+                        {message.links.map((link) => {
+                          return <img className="h-[150px] rounded-md" src={link} ></img>;
+                        })}
+                      </div>
+                    );
                   } else {
                     return (
                       <motion.div
@@ -241,7 +252,10 @@ export default function Home() {
               ref={messageRef}
               className="h-[100%]"
             />
-            <Button onClick={handleSubmitMessage} className="ml-5 w-[10%] p-2 h-[110%]">
+            <Button
+              onClick={handleSubmitMessage}
+              className="ml-5 w-[10%] p-2 h-[110%]"
+            >
               <span>
                 <img src="/send_symbol.svg" />
               </span>

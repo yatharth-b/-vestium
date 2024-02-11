@@ -50,6 +50,10 @@ export default function Home() {
 
   const [items, setItems] = useState<Item[] | null>(null);
 
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const [uploadingImage, setUploadingImage] = useState(false);
+
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -89,9 +93,11 @@ export default function Home() {
       return;
     }
 
+    setUploadingImage(true);
     uploadImage(user!.uid, selectedFiles[0], messageRef.current.value).then(
-      (response) => {
-        router.reload();
+      () => {
+        setUploadingImage(false);
+        setModalOpen(false);
       }
     );
   }
@@ -103,10 +109,10 @@ export default function Home() {
 
   return (
     <main
-      className={`flex h-screen flex-col ${inter.className} bg-[#1E1E1E] overflow-hidden w-screen items-center`}
+      className={`flex flex-col ${inter.className} bg-[#1E1E1E] overflow-hidden w-screen items-center`}
     >
       <Header></Header>
-      <div className="w-[80%] min-w-[80%] flex flex-col mt-[100px]">
+      <div className="w-[80%] min-w-[80%] flex flex-col mt-[100px] pb-[5%]">
         <Card className="w-[350px] mb-10">
           <CardHeader>
             <CardTitle>Upload Clothes</CardTitle>
@@ -116,8 +122,13 @@ export default function Home() {
           </CardHeader>
           <CardContent></CardContent>
           <CardFooter className="flex justify-between">
-            <Dialog>
-              <DialogTrigger className="bg-[#ea580c] p-[2%] rounded-md">
+            <Dialog open={modalOpen}>
+              <DialogTrigger
+                className="bg-[#ea580c] p-[2%] rounded-md"
+                onClick={() => {
+                  setModalOpen(true);
+                }}
+              >
                 Upload
               </DialogTrigger>
               <DialogContent>
@@ -133,7 +144,24 @@ export default function Home() {
                   placeholder="What's the name of this item?"
                   ref={messageRef}
                 />
-                <Button onClick={handleUpload}>Upload</Button>
+                <Button onClick={handleUpload} disabled={uploadingImage}>
+                  {uploadingImage ? (
+                    <div className="scroll-m-20 border-b bg-[#FFFAE1] px-4 py-2 rounded-full">
+                      <img src="/loading.gif" className="w-[50px]"></img>
+                    </div>
+                  ) : (
+                    "Upload"
+                  )}
+                </Button>
+                <Button
+                  onClick={() => {
+                    setModalOpen(false);
+                  }}
+                  variant="outline"
+                  disabled={uploadingImage}
+                >
+                  Cancel
+                </Button>
                 <DialogDescription className="text-red-500">
                   {error}
                 </DialogDescription>
@@ -155,7 +183,7 @@ export default function Home() {
                   }}
                 >
                   <div className="w-[50%] bg-black">
-                   <CardTitle className="z-[10] p-4">{item.name}</CardTitle>
+                    <CardTitle className="z-[10] p-4">{item.name}</CardTitle>
                   </div>
                   <div className="w-[50%]"></div>
                 </div>
