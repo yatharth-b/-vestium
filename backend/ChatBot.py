@@ -177,6 +177,8 @@ class ChatBot():
             
             messages = [{"role": "assistant", "content": string_output}] # Because it is outputting, no need to add history here
             self.conversation_history.extend(messages)
+            if function == "get_rec_from_wardrobe" or function == "get_rec_from_web":
+                return {"links": [], "conversation_history": self.conversation_history, "content": text, "keywords": self.tags, "recommendations": output}
             return {"links": output, "conversation_history": self.conversation_history, "content": text, "keywords": self.tags}
         else:
             output = data.choices[0].message.content
